@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        /* 1. Basic Page Styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* 2. Container Styling */
+        .login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 350px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        /* 3. Input Group Styling */
+        .input-group {
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box; 
+            transition: 0.3s;
+            outline: none;
+        }
+
+        /* 4. VALIDATION LOGIC (CSS) */
+        
+        /* Valid State: Green Border */
+        input:not(:placeholder-shown):valid {
+            border-color: #2ecc71;
+            background-color: #f0fff4;
+        }
+
+        /* Invalid State: Red Border */
+        input:not(:placeholder-shown):invalid {
+            border-color: #e74c3c;
+            background-color: #fff5f5;
+        }
+
+        /* Error Message Styling */
+        .error-msg {
+            color: #e74c3c;
+            font-size: 0.75rem;
+            margin-top: 5px;
+            display: none; 
+        }
+
+        /* Show error message when input is invalid */
+        input:not(:placeholder-shown):invalid + .error-msg {
+            display: block;
+        }
+
+        /* 5. Button Styling */
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Optional: Disable button if form is invalid */
+        form:invalid button {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Extra: Footer link styling */
+        .footer-text {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: #666;
+        }
+        .footer-text a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>Welcome Back</h2>
+        <form id="loginForm">
+            
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder=" " required>
+                <span class="error-msg">Please enter a valid email address.</span>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" minlength="7" placeholder=" " required>
+                <span class="error-msg">Password must be more than 6 characters.</span>
+            </div>
+
+            <button type="submit">Log In</button>
+
+            <div class="footer-text">
+                Don't have an account? <a href="signup.html">Sign Up</a>
+            </div>
+        </form>
+    </div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const emailInput = document.getElementById('email').value; // Get value from box
+        const passwordInput = document.getElementById('password').value;
+
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: emailInput, password: passwordInput })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // --- CRITICAL FIX START ---
+                // 1. Save the Email to the browser
+                localStorage.setItem('userEmail', emailInput);
+                
+                // 2. Save the Username (from server)
+                localStorage.setItem('realUsername', data.username);
+
+                // 3. Debug Alert (You can remove this later)
+                // This confirms the email is actually saved!
+                alert("Login Success! Saved email: " + emailInput);
+                // --- CRITICAL FIX END ---
+
+                window.location.href = 'home.html';
+            } else {
+                alert(data.message);
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Login Error: See console");
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Settings</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <i class="fa-solid fa-bars" id="hamburger-btn"></i>
+            <span id="user-display">Loading...</span>
+        </div>
+        <div class="nav-right">
+            <div class="icon-container"><i class="fa-solid fa-cart-shopping"></i></div>
+            <div class="icon-container">
+                <a href="notification.html" style="color: inherit;">
+                    <i class="fa-solid fa-bell"></i>
+                </a>
+            </div>
+                
+            <div class="icon-container">
+                <a href="profile.html" style="color: inherit;"><i class="fa-solid fa-user"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3> <i class="fa-solid fa-xmark" id="close-btn"></i>
+        </div>
+        <ul class="sidebar-links">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="#">Sell</a></li>
+            <li><a href="#">Categories</a></li>
+            <li><a href="#">About</a></li>
+            <li style="margin-top: auto;"><a href="login.html" id="logout-btn">Logout</a></li>
+        </ul>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <div class="profile-wrapper">
+        
+        <div class="profile-header">
+            <span class="profile-title">Profile Settings</span>
+            <span class="progress-badge" id="progress-text">0% Complete</span>
+        </div>
+
+        <div class="mini-alert" id="mini-alert">
+            <i class="fa-solid fa-info-circle"></i> Please complete your profile details below.
+        </div>
+
+        <form id="profileForm">
+            <div class="profile-pic-section">
+                <label for="file-upload" class="img-circle">
+                    <img id="profile-img-tag" style="display:none;">
+                    <i class="fa-solid fa-camera" id="default-icon"></i>
+                </label>
+                <div>
+                    <h4 style="margin-bottom: 5px;">Profile Photo</h4>
+                    <p style="font-size: 0.8rem; color: #777;">Tap the circle to change</p>
+                </div>
+                <input type="file" id="file-upload" accept="image/*" style="display: none;">
+            </div>
+
+            <div class="form-list">
+                
+                <div class="list-item">
+                    <label>Username</label>
+                    <input type="text" id="username" readonly>
+                </div>
+
+                <div class="list-item">
+                    <label>Email Address</label>
+                    <input type="text" id="email" readonly>
+                </div>
+
+                <div class="list-item">
+                    <label>Date of Birth</label>
+                    <input type="date" id="dob">
+                </div>
+
+                <div class="list-item">
+                    <label>Country</label>
+                    <select id="country">
+                        <option value="">Select Country</option>
+                        </select>
+                </div>
+
+                <div class="list-item">
+                    <label>State</label>
+                    <select id="state" disabled>
+                        <option value="">Select State</option>
+                    </select>
+                </div>
+
+                <div class="list-item">
+                    <label>Residential Address</label>
+                    <input type="text" id="address" placeholder="e.g., 123 Baker Street">
+                </div>
+
+            </div>
+
+            <button type="submit" class="save-btn">Save Changes</button>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+
+    <script>
+        // --- PROFILE SPECIFIC SCRIPT ---
+
+        const locationData = {
+            "USA": ["California", "New York", "Texas", "Florida"],
+            "Nigeria": ["Lagos", "Abuja", "Kano", "Rivers"],
+            "India": ["Delhi", "Maharashtra", "Karnataka"],
+            "UK": ["London", "Manchester", "Liverpool"]
+        };
+
+        const email = localStorage.getItem('userEmail');
+        const countrySelect = document.getElementById('country');
+        const stateSelect = document.getElementById('state');
+        const alertBox = document.getElementById('mini-alert');
+        const progressText = document.getElementById('progress-text');
+
+        let currentProfileBase64 = "";
+
+        // 1. Calculate Progress
+        function updateProgress() {
+            const dob = document.getElementById('dob').value;
+            const country = document.getElementById('country').value;
+            const state = document.getElementById('state').value;
+            const address = document.getElementById('address').value;
+            const hasPic = currentProfileBase64 !== "";
+
+            // Total fields to fill: 5 (DOB, Country, State, Address, Pic)
+            let filled = 0;
+            if (dob) filled++;
+            if (country) filled++;
+            if (state) filled++;
+            if (address) filled++;
+            if (hasPic) filled++;
+
+            let percentage = (filled / 5) * 100;
+            progressText.textContent = `${percentage}% Complete`;
+
+            // Color code the badge
+            if (percentage === 100) {
+                progressText.style.background = "#d4edda"; // Greenish
+                progressText.style.color = "#155724";
+                alertBox.style.display = 'none'; // Hide alert if full
+            } else {
+                progressText.style.background = "#fff3cd"; // Yellowish
+                progressText.style.color = "#856404";
+                alertBox.style.display = 'inline-block'; // Show alert
+            }
+        }
+
+        // 2. Populate Dropdowns
+        for (let country in locationData) {
+            let option = document.createElement('option');
+            option.value = country;
+            option.textContent = country;
+            countrySelect.appendChild(option);
+        }
+
+        countrySelect.addEventListener('change', function() {
+            stateSelect.innerHTML = '<option value="">Select State</option>';
+            if (this.value) {
+                stateSelect.disabled = false;
+                locationData[this.value].forEach(state => {
+                    let opt = document.createElement('option');
+                    opt.value = state; opt.textContent = state;
+                    stateSelect.appendChild(opt);
+                });
+            } else {
+                stateSelect.disabled = true;
+            }
+            updateProgress(); // Recalculate on change
+        });
+
+        // Add listeners to other inputs to update progress in real-time
+        ['dob', 'address', 'state'].forEach(id => {
+            document.getElementById(id).addEventListener('input', updateProgress);
+        });
+
+        // 3. Load Data
+        window.addEventListener('DOMContentLoaded', async () => {
+            if (!email) return window.location.href = 'login.html';
+
+            try {
+                const response = await fetch(`/get-profile?email=${email}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('username').value = data.username;
+                    document.getElementById('email').value = data.email;
+                    document.getElementById('dob').value = data.dob || "";
+                    document.getElementById('address').value = data.address || "";
+                    
+                    if (data.country) {
+                        countrySelect.value = data.country;
+                        countrySelect.dispatchEvent(new Event('change')); // Load states
+                        if (data.state) stateSelect.value = data.state;
+                    }
+
+                    if (data.profilePic) {
+                        currentProfileBase64 = data.profilePic;
+                        document.getElementById('profile-img-tag').src = data.profilePic;
+                        document.getElementById('profile-img-tag').style.display = 'block';
+                        document.getElementById('default-icon').style.display = 'none';
+                    }
+                    updateProgress(); // Calculate initial progress
+                }
+            } catch (e) { console.error(e); }
+        });
+
+        // 4. Handle Image Upload
+        document.getElementById('file-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (file.size > 2 * 1024 * 1024) {
+                alert("Image too large (Max 2MB)");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                currentProfileBase64 = evt.target.result;
+                document.getElementById('profile-img-tag').src = currentProfileBase64;
+                document.getElementById('profile-img-tag').style.display = 'block';
+                document.getElementById('default-icon').style.display = 'none';
+                updateProgress();
+            }
+            reader.readAsDataURL(file);
+        });
+
+        // 5. Save Data
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                email: email,
+                dob: document.getElementById('dob').value,
+                country: document.getElementById('country').value,
+                state: document.getElementById('state').value,
+                address: document.getElementById('address').value,
+                profilePic: currentProfileBase64
+            };
+
+            const response = await fetch('/update-profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert("Profile Updated Successfully!");
+                updateProgress();
+            } else {
+                alert("Failed to save.");
+            }
+        });
+    </script>
+</body>
+</html>

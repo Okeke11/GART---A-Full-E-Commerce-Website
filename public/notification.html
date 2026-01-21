@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Gart</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="notification.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body onclick="clearNotifications()">
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <i class="fa-solid fa-bars" id="hamburger-btn"></i>
+            <span id="user-display">Loading...</span>
+        </div>
+        <div class="nav-right">
+            <div class="icon-container"><i class="fa-solid fa-cart-shopping"></i></div>
+            
+            <div class="icon-container">
+                <i class="fa-solid fa-bell" style="color: #3498db;"></i>
+                <span class="badge" id="notif-badge" style="display: none;">0</span>
+            </div>
+            
+            <div class="icon-container">
+                <a href="profile.html" style="color: inherit;"><i class="fa-solid fa-user"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3> <i class="fa-solid fa-xmark" id="close-btn"></i>
+        </div>
+        <ul class="sidebar-links">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="#">Sell</a></li>
+            <li><a href="#">Categories</a></li>
+            <li><a href="#">About</a></li>
+            <li style="margin-top: auto;"><a href="login.html" id="logout-btn">Logout</a></li>
+        </ul>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <div class="notification-wrapper">
+        <h2 class="page-title">Your Notifications</h2>
+        <div id="notification-list">
+            </div>
+    </div>
+
+    <script src="script.js"></script>
+
+<script>
+    // RENDER LIST
+    document.addEventListener('DOMContentLoaded', () => {
+        const listContainer = document.getElementById('notification-list');
+        // We use the data fetched by script.js (navbar) which runs first
+        const notifications = JSON.parse(localStorage.getItem('cached_notifications')) || [];
+
+        if (notifications.length === 0) {
+            listContainer.innerHTML = '<div class="no-notifs">No notifications yet.</div>';
+            return;
+        }
+
+        let listHTML = '';
+        notifications.forEach(notif => {
+            const seenClass = notif.seen ? '' : 'unseen';
+            listHTML += `
+                <div class="notif-card ${seenClass}">
+                    <div class="notif-header">${notif.title}</div>
+                    <div class="notif-body">${notif.body}</div>
+                    <div class="notif-time">${notif.time}</div>
+                </div>
+            `;
+        });
+        listContainer.innerHTML = listHTML;
+    });
+
+    // FUNCTION TO CLEAR BADGE ON CLICK
+    async function clearNotifications() {
+        const email = localStorage.getItem('userEmail');
+        const notifications = JSON.parse(localStorage.getItem('cached_notifications')) || [];
+        const hasUnseen = notifications.some(n => !n.seen);
+
+        if (hasUnseen && email) {
+            // 1. Tell Server: "User saw these!"
+            await fetch('/clear-notifications', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+
+            // 2. Update UI Immediately (Visual feedback)
+            const badge = document.getElementById('notif-badge');
+            if(badge) badge.style.display = 'none';
+            
+            const cards = document.querySelectorAll('.notif-card');
+            cards.forEach(card => card.classList.remove('unseen'));
+
+            // 3. Update Cache locally so we don't need to refresh to see changes
+            const updated = notifications.map(n => ({ ...n, seen: true }));
+            localStorage.setItem('cached_notifications', JSON.stringify(updated));
+        }
+    }
+</script>
+</body>
+</html>

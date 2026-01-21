@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <i class="fa-solid fa-bars" id="hamburger-btn"></i>
+            <span id="user-display">Welcome, User</span>
+        </div>
+        
+        <div class="nav-right">
+            <div class="icon-container">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="badge">2</span> </div>
+            <div class="icon-container">
+                <a href="notification.html" style="color: inherit;">
+                    <i class="fa-solid fa-bell"></i>
+                </a>
+            </div>
+            <div class="icon-container">
+                <a href="profile.html" style="color: inherit;">
+                    <i class="fa-solid fa-user"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3>
+            <i class="fa-solid fa-xmark" id="close-btn"></i>
+        </div>
+        
+        <ul class="sidebar-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Sell</a></li>
+            
+            <li class="dropdown-item">
+                <a href="#" id="categories-btn">
+                    Categories <i class="fa-solid fa-chevron-down"></i>
+                </a>
+                <ul class="dropdown-menu" id="category-dropdown">
+                    <li><a href="#">Phones</a></li>
+                    <li><a href="#">Electronics</a></li>
+                    <li><a href="#">Gadgets</a></li>
+                    <li><a href="#">Laptops</a></li>
+                    <li><a href="#">Furniture</a></li>
+                    <li><a href="#">Home Appliances</a></li>
+                    <li><a href="#">All</a></li>
+                </ul>
+            </li>
+
+            <li><a href="#">About</a></li>
+            <li style="margin-top: auto;"><a href="login.html" id="logout-btn">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="main-content">
+        <h1>Welcome to Gart</h1>
+        <p>Select a category to start shopping.</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

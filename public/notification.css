@@ -1,0 +1,75 @@
+/* notification.css */
+
+/* Reuse global styles from style.css (imported in HTML) */
+
+/* Wrapper for the scrollable list */
+.notification-wrapper {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 0 15px;
+    padding-bottom: 80px; /* Space for scrolling */
+}
+
+.page-title {
+    margin-bottom: 25px;
+    color: #2c3e50;
+    text-align: center;
+}
+
+/* The "Capsule" Card */
+.notif-card {
+    background: white;
+    border-radius: 50px; /* Capsule shape */
+    padding: 20px 35px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid #f0f0f0;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.notif-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+/* Unseen State (Light blue tint) */
+.notif-card.unseen {
+    background-color: #f0f8ff; /* AliceBlue */
+    border-color: #3498db;
+}
+
+/* Header Styling (Bold & Larger) */
+.notif-header {
+    font-size: 1.25rem;
+    font-weight: 800; /* Extra bold */
+    color: #2c3e50;
+    margin-bottom: 8px;
+    text-transform: capitalize;
+}
+
+/* Body Styling */
+.notif-body {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* Timestamp Styling */
+.notif-time {
+    font-size: 0.75rem;
+    color: #999;
+    margin-top: 10px;
+    align-self: flex-end; /* Push to right */
+    font-style: italic;
+}
+
+/* Empty State */
+.no-notifs {
+    text-align: center;
+    color: #999;
+    margin-top: 50px;
+}

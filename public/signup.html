@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up Form</title>
+    <style>
+        /* 1. Basic Page Styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* 2. Container Styling */
+        .signup-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 350px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+        /* 3. Input Group Styling */
+        .input-group {
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box; /* Ensures padding doesn't break width */
+            transition: 0.3s;
+            outline: none;
+        }
+
+        /* 4. THE VALIDATION LOGIC (CSS) */
+        
+        /* Valid State: Green Border */
+        /* We use :not(:placeholder-shown) so it doesn't turn green/red while empty */
+        input:not(:placeholder-shown):valid {
+            border-color: #2ecc71;
+            background-color: #f0fff4;
+        }
+
+        /* Invalid State: Red Border */
+        input:not(:placeholder-shown):invalid {
+            border-color: #e74c3c;
+            background-color: #fff5f5;
+        }
+
+        /* Error Message Styling */
+        .error-msg {
+            color: #e74c3c;
+            font-size: 0.75rem;
+            margin-top: 5px;
+            display: none; /* Hidden by default */
+        }
+
+        /* Show error message specifically when input is invalid */
+        input:not(:placeholder-shown):invalid + .error-msg {
+            display: block;
+        }
+
+        /* 5. Button Styling */
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Optional: Disable button if form is invalid (using :has selector) */
+        form:invalid button {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .footer-text {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: #666;
+        }
+        .footer-text a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="signup-container">
+        <h2>Create Account</h2>
+        <form id="signupForm">
+            
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder=" " required>
+                <span class="error-msg">Username must not be more than 10 characters.</span>
+            </div>
+
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder=" " required>
+                <span class="error-msg">Please enter a valid email address.</span>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" minlength="7" placeholder=" " required>
+                <span class="error-msg">Password must be more than 6 characters.</span>
+            </div>
+
+            <button type="submit">Sign Up</button>
+            <div class="footer-text">
+                <p>Already have an account? <a href="login.html">Login</a></p>
+            </div>
+        </form>
+    </div>
+
+<script>
+    document.getElementById('signupForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // 1. Get the username value
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            const response = await fetch('/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                // 2. Send username to server
+                body: JSON.stringify({ username, email, password })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.reset();
+                window.location.href = 'login.html';
+            } else {
+                alert(data.message);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    });
+</script>
+
+</body>
+</html>
