@@ -1,3 +1,4 @@
+//Run on port 3000
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
