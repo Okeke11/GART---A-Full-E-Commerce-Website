@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - Gart</title>
+    <link rel="icon" type="image/png" href="images/gart-logo.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* DETAILS PAGE STYLES */
+        .details-wrapper {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* 1. Main Product Section */
+        .product-main {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr; /* Image wider than details */
+            gap: 50px;
+            margin-bottom: 80px;
+        }
+
+        /* Left: Image Gallery */
+        .gallery-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .thumbnail-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .thumbnail {
+            width: 70px;
+            height: 70px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            object-fit: cover;
+            border-radius: 5px;
+            opacity: 0.6;
+            transition: all 0.3s;
+        }
+
+        .thumbnail.active, .thumbnail:hover {
+            border-color: #3498db;
+            opacity: 1;
+        }
+
+        .main-image-box {
+            flex: 1;
+            height: 500px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        .main-image-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* Right: Details & Action */
+        .details-info h1 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .rating {
+            color: #f1c40f;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .details-price {
+            font-size: 2rem;
+            color: #3498db; /* Gart Blue */
+            font-weight: 800;
+            margin-bottom: 30px;
+            display: block;
+        }
+
+        .info-block {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-block h3 {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .description-text {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Delivery Input Box */
+        .delivery-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #eee;
+        }
+
+        .delivery-box input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+
+        /* Seller Contact */
+        .seller-contact {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .reveal-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .buy-now-btn {
+            width: 100%;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 18px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .buy-now-btn:hover { background: #2980b9; }
+
+        /* 2. Related Products */
+        .related-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            border-left: 5px solid #3498db;
+            padding-left: 15px;
+        }
+
+        /* Reuse grid from home page */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 900px) {
+            .product-main { grid-template-columns: 1fr; }
+            .gallery-container { flex-direction: column-reverse; }
+            .thumbnail-list { flex-direction: row; justify-content: center; }
+            .main-image-box { height: 350px; }
+            .product-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="home.html">
+                <img src="images/gart-logo.png" alt="Gart Logo" style="height: 40px; margin-left: 15px; border-radius: 50%;">
+            </a>
+            <a href="home.html" style="margin-left: 20px; text-decoration: none; color: #555; font-weight: 600;">
+                <i class="fa-solid fa-arrow-left"></i> Keep Shopping
+            </a>
+        </div>
+    </nav>
+
+    <div class="details-wrapper">
+        
+        <div class="product-main" id="productMain">
+            <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #3498db;"></i> Loading Product...
+            </div>
+        </div>
+
+        <div class="related-section">
+            <h2>Related Products</h2>
+            <div class="product-grid" id="relatedGrid">
+                </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get Product ID from URL (e.g., product_details.html?id=12345)
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if(productId) {
+                loadProductDetails(productId);
+            } else {
+                alert("No product selected!");
+                window.location.href = 'home.html';
+            }
+        });
+
+        let currentCategory = ''; // Store to fetch related items
+
+        async function loadProductDetails(id) {
+            try {
+                const response = await fetch(`/api/products/${id}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const p = data.product;
+                    currentCategory = p.category; // Save category for related items
+                    renderMainProduct(p);
+                    loadRelatedProducts(id, p.category);
+                } else {
+                    document.getElementById('productMain').innerHTML = '<h2>Product not found.</h2>';
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderMainProduct(p) {
+            const container = document.getElementById('productMain');
+            
+            // Generate Thumbnails HTML
+            let thumbnailsHtml = '';
+            p.images.forEach((img, index) => {
+                thumbnailsHtml += `<img src="/uploads/${img}" class="thumbnail ${index===0?'active':''}" onclick="changeMainImage('/uploads/${img}', this)">`;
+            });
+
+            container.innerHTML = `
+                <div class="gallery-container">
+                    <div class="thumbnail-list">
+                        ${thumbnailsHtml}
+                    </div>
+                    <div class="main-image-box">
+                        <img id="mainImg" src="/uploads/${p.images[0]}" alt="${p.title}">
+                    </div>
+                </div>
+
+                <div class="details-info">
+                    <h1>${p.title}</h1>
+                    <div class="rating">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-regular fa-star-half-stroke"></i>
+                        <span style="color: #7f8c8d; margin-left: 10px;">(4.5 Ratings)</span>
+                    </div>
+
+                    <span class="details-price">₦ ${parseInt(p.price).toLocaleString()}</span>
+
+                    <div class="info-block">
+                        <h3>Description</h3>
+                        <p class="description-text">${p.description}</p>
+                    </div>
+
+                    <div class="info-block">
+                        <h3>Delivery Address</h3>
+                        <div class="delivery-box">
+                            <label style="font-size: 0.85rem; color: #666;"><i class="fa-solid fa-location-dot"></i> Deliver to:</label>
+                            <input type="text" placeholder="Enter full address (e.g. 12 Babcock Univ Rd...)">
+                        </div>
+                    </div>
+
+                    <div class="info-block">
+                        <h3>Seller Info</h3>
+                        <div class="seller-contact">
+                            <div style="flex:1;">
+                                <p style="font-weight:600; color:#333;">Verified Seller</p>
+                                <p style="font-size:0.9rem; color:#666;">Member since 2024</p>
+                            </div>
+                            <button class="reveal-btn" onclick="this.innerText = '080-123-4567'">Show Number</button>
+                        </div>
+                    </div>
+
+                    <button class="buy-now-btn">Buy Now</button>
+                </div>
+            `;
+        }
+
+        // Image Switcher Logic
+        window.changeMainImage = function(src, thumb) {
+            document.getElementById('mainImg').src = src;
+            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
+        }
+
+        async function loadRelatedProducts(currentId, category) {
+            try {
+                const response = await fetch('/api/products');
+                const data = await response.json();
+                
+                if(data.success) {
+                    // Filter: Same category, NOT the current product, limit to 4 items
+                    const related = data.products
+                        .filter(p => p.category === category && p._id !== currentId)
+                        .slice(0, 4);
+                    
+                    const grid = document.getElementById('relatedGrid');
+                    
+                    if(related.length === 0) {
+                        grid.innerHTML = '<p style="color:#999; grid-column:1/-1; text-align:center;">No related products found.</p>';
+                        return;
+                    }
+
+                    related.forEach(p => {
+                        const card = document.createElement('div');
+                        card.className = 'product-card'; // Reusing your home page card style
+                        // Simple card html for related items
+                        card.innerHTML = `
+                            <div style="height:180px; background:#f9f9f9; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                                <img src="/uploads/${p.images[0]}" style="height:100%; width:auto;">
+                            </div>
+                            <div style="padding:15px;">
+                                <h3 style="font-size:0.9rem; margin-bottom:5px;">${p.title}</h3>
+                                <div style="color:#3498db; font-weight:bold;">₦ ${parseInt(p.price).toLocaleString()}</div>
+                            </div>
+                        `;
+                        // Make related item clickable
+                        card.style.cursor = 'pointer';
+                        card.onclick = () => window.location.href = `product_details.html?id=${p._id}`;
+                        grid.appendChild(card);
+                    });
+                }
+            } catch(e) { console.error(e); }
+        }
+    </script>
+</body>
+</html>

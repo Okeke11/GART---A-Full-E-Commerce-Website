@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell on Gart - Start Listing</title>
+    <link rel="icon" type="image/png" href="images/gart-logo.png">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* SELL PAGE SPECIFIC STYLES */
+        .sell-wrapper {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 40px;
+            align-items: flex-start; /* Keeps sidebar at top */
+        }
+
+        /* LEFT: Upload Form */
+        .upload-container {
+            flex: 2;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, 
+        .form-group textarea:focus {
+            border-color: #3498db;
+        }
+
+        /* Image Upload Area */
+        .image-upload-box {
+            border: 2px dashed #bdc3c7;
+            padding: 40px;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+            position: relative;
+        }
+
+        .image-upload-box:hover {
+            background-color: #f9f9f9;
+            border-color: #3498db;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #bdc3c7;
+            margin-bottom: 10px;
+        }
+
+        .file-input {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* RIGHT: Safety Sidebar */
+        .safety-sidebar {
+            flex: 1;
+            background: #e8f4fc; /* Light blue specific for info */
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #d6eaf8;
+            position: sticky;
+            top: 100px; /* Sticks when scrolling */
+        }
+
+        .safety-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: #2980b9;
+        }
+
+        .checklist-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .check-icon {
+            color: #27ae60;
+            font-size: 1.2rem;
+            margin-top: 3px;
+        }
+
+        .checklist-text h4 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+
+        .checklist-text p {
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .submit-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #2980b9;
+        }
+
+        @media (max-width: 850px) {
+            .sell-wrapper { flex-direction: column-reverse; } /* Put info on top on mobile */
+            .safety-sidebar { position: static; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <i class="fa-solid fa-bars" id="hamburger-btn"></i>
+            <a href="home.html">
+                <img src="images/gart-logo.png" alt="Gart Logo" style="height: 40px; margin-left: 15px; border-radius: 50%;">
+            </a>
+        </div>
+        <div class="nav-right">
+            <div class="icon-container"><i class="fa-solid fa-cart-shopping"></i></div>
+            <div class="icon-container">
+                <a href="notification.html" style="color: inherit;">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="badge" id="notif-badge" style="display: none;">0</span>
+                </a>
+            </div>
+            <div class="icon-container">
+                <a href="profile.html" style="color: inherit;"><i class="fa-solid fa-user"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3> <i class="fa-solid fa-xmark" id="close-btn"></i>
+        </div>
+        <ul class="sidebar-links">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="tosell.html" style="background-color: #34495e;">Sell</a></li>
+            <li><a href="#">Categories</a></li>
+            <li><a href="about.html">About</a></li>
+            <li style="margin-top: auto;"><a href="login.html" id="logout-btn">Logout</a></li>
+        </ul>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <div class="sell-wrapper">
+        
+        <div class="upload-container">
+            <h1 class="section-title">List an Item</h1>
+            
+            <form id="sellForm">
+                <div class="form-group">
+                    <label>Product Title</label>
+                    <input type="text" placeholder="e.g. iPhone 13 Pro Max - 256GB" required>
+                </div>
+
+                <div class="form-group" style="display: flex; gap: 20px;">
+                    <div style="flex: 1;">
+                        <label>Price (₦)</label>
+                        <input type="number" placeholder="0.00" required>
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Condition</label>
+                        <select required>
+                            <option value="">Select...</option>
+                            <option value="new">Brand New</option>
+                            <option value="used_good">Used - Like New</option>
+                            <option value="used_fair">Used - Fair</option>
+                            <option value="defective">For Parts / Defective</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+                    <select required>
+                        <option value="">Select Category...</option>
+                        <option value="phones">Phones & Tablets</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="furniture">Furniture</option>
+                        <option value="vehicles">Vehicles</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Product Images (Min. 3 required)</label>
+                    <div class="image-upload-box">
+                        <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                        <p>Click or Drag photos here</p>
+                        <p style="font-size: 0.8rem; color: #999;">Supported formats: JPG, PNG</p>
+                        <input type="file" class="file-input" multiple accept="image/*">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea rows="6" placeholder="Describe your item in detail. Mention any scratches, defects, or missing accessories..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Post Ad Now</button>
+            </form>
+        </div>
+
+        <div class="safety-sidebar">
+            <div class="safety-header">
+                <i class="fa-solid fa-shield-halved" style="font-size: 1.5rem;"></i>
+                <h3>Seller Guidelines</h3>
+            </div>
+
+            <div class="checklist-item">
+                <i class="fa-solid fa-check check-icon"></i>
+                <div class="checklist-text">
+                    <h4>No Stock Photos</h4>
+                    <p>Use real photos of your item. Ads with Google images will be rejected.</p>
+                </div>
+            </div>
+
+            <div class="checklist-item">
+                <i class="fa-solid fa-check check-icon"></i>
+                <div class="checklist-text">
+                    <h4>Be Honest</h4>
+                    <p>Mention every scratch or issue. It prevents returns and builds trust.</p>
+                </div>
+            </div>
+
+            <div class="checklist-item">
+                <i class="fa-solid fa-check check-icon"></i>
+                <div class="checklist-text">
+                    <h4>Stay on Gart</h4>
+                    <p>Keep all chats and payments inside the app. We can't protect you if you move to WhatsApp.</p>
+                </div>
+            </div>
+
+            <div class="checklist-item">
+                <i class="fa-solid fa-check check-icon"></i>
+                <div class="checklist-text">
+                    <h4>Meet Safely</h4>
+                    <p>If meeting locally, choose a public place like a mall or station.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>About Gart</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="careers.html">Careers</a></li>
+                    <li><a href="press.html">Press</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="#">Track Order</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="privacy_policy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="shipping_info.html">Shipping Info</a></li>
+                    <li><a href="payment_option.html">Payment Options</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Gart Inc. Shop Global. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+    document.getElementById('sellForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const submitBtn = document.querySelector('.submit-btn');
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+        submitBtn.disabled = true;
+
+        // 1. Create FormData (Used for sending files)
+        const formData = new FormData();
+        
+        // 2. Add Text Fields
+        formData.append('title', document.querySelector('input[placeholder="e.g. iPhone 13 Pro Max - 256GB"]').value);
+        formData.append('price', document.querySelector('input[placeholder="0.00"]').value);
+        formData.append('condition', document.querySelectorAll('select')[0].value);
+        formData.append('category', document.querySelectorAll('select')[1].value);
+        formData.append('description', document.querySelector('textarea').value);
+        formData.append('sellerEmail', localStorage.getItem('userEmail')); // Get logged in user
+
+        // 3. Add Images
+        const fileInput = document.querySelector('.file-input');
+        for (let i = 0; i < fileInput.files.length; i++) {
+            formData.append('images', fileInput.files[i]);
+        }
+
+        try {
+            const response = await fetch('/api/products', {
+                method: 'POST',
+                body: formData // No headers needed, browser sets them for FormData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert('Success! Your product is now live.');
+                window.location.href = 'home.html';
+            } else {
+                alert('Error listing product.');
+                submitBtn.innerHTML = 'Post Ad Now';
+                submitBtn.disabled = false;
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Server error.');
+        }
+    });
+</script>
+</body>
+</html>

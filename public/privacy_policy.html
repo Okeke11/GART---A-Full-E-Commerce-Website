@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Gart</title>
+    <link rel="icon" type="image/png" href="images/gart-logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- GLOBAL VARIABLES & RESET --- */
+        :root {
+            --primary-color: #3498db;
+            --text-color: #333;
+            --bg-color: #f9f9f9;
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- NAVBAR (Simplified for Policy Page) --- */
+        .policy-nav {
+            background: white;
+            padding: 15px 40px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+
+        .nav-back {
+            color: #555;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .nav-back:hover {
+            color: var(--primary-color);
+        }
+
+        /* --- LAYOUT CONTAINER --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* --- SIDEBAR NAVIGATION --- */
+        .sidebar-nav {
+            width: var(--sidebar-width);
+            padding: 40px 20px 40px 0;
+            position: sticky;
+            top: 70px; /* Offset for navbar */
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+            border-right: 1px solid #eee;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar-nav a {
+            text-decoration: none;
+            color: #666;
+            font-size: 0.95rem;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            background-color: #e8f4fc;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .content {
+            flex: 1;
+            padding: 40px 0 40px 60px;
+            background: white;
+            max-width: 900px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .last-updated {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 40px;
+            display: block;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            color: #34495e;
+        }
+
+        p {
+            margin-bottom: 20px;
+            color: #555;
+            text-align: justify;
+        }
+
+        ul {
+            margin-bottom: 20px;
+            padding-left: 25px;
+            color: #555;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .email-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* --- FOOTER --- */
+        .simple-footer {
+            background: #f8f9fa;
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid #eee;
+            font-size: 0.85rem;
+            color: #777;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar-nav {
+                display: none; /* Hide sidebar on mobile */
+            }
+            .content {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="policy-nav">
+        <a href="home.html" class="nav-logo">
+            <img src="images/gart-logo.png" alt="Logo" style="height: 30px; border-radius: 50%;">
+            Gart Privacy
+        </a>
+        <a href="home.html" class="nav-back">
+            <i class="fa-solid fa-arrow-left"></i> Back to Shop
+        </a>
+    </nav>
+
+    <div class="container">
+        
+        <aside class="sidebar-nav">
+            <ul>
+                <li><a href="#intro" class="active">1. Introduction</a></li>
+                <li><a href="#info-collect">2. Information We Collect</a></li>
+                <li><a href="#how-use">3. How We Use Your Data</a></li>
+                <li><a href="#sharing">4. Sharing Information</a></li>
+                <li><a href="#cookies">5. Cookies & Tracking</a></li>
+                <li><a href="#security">6. Data Security</a></li>
+                <li><a href="#rights">7. Your User Rights</a></li>
+                <li><a href="#children">8. Children's Privacy</a></li>
+                <li><a href="#changes">9. Changes to Policy</a></li>
+                <li><a href="#contact">10. Contact Us</a></li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <h1>Privacy Policy</h1>
+            <span class="last-updated">Last Updated: January 22, 2026</span>
+
+            <section id="intro">
+                <p>Welcome to Gart ("we," "our," or "us"). We are committed to protecting your privacy and ensuring you have a positive experience on our website and in using our products and services (collectively, "Services").</p>
+                <p>This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website <strong>gart.io</strong>, including any other media form, media channel, mobile website, or mobile application related or connected thereto. Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the site.</p>
+            </section>
+
+            <section id="info-collect">
+                <h2>2. Information We Collect</h2>
+                <p>We collect information about you in a variety of ways. The information we may collect on the Site includes:</p>
+                
+                <h3>Personal Data</h3>
+                <p>Personally identifiable information, such as your name, shipping address, email address, and telephone number, and demographic information, such as your age, gender, hometown, and interests, that you voluntarily give to us when you register with the Site or when you choose to participate in various activities related to the Site, such as online chat and message boards.</p>
+                
+                <h3>Derivative Data</h3>
+                <p>Information our servers automatically collect when you access the Site, such as your IP address, your browser type, your operating system, your access times, and the pages you have viewed directly before and after accessing the Site.</p>
+
+                <h3>Financial Data</h3>
+                <p>Financial information, such as data related to your payment method (e.g., valid credit card number, card brand, expiration date) that we may collect when you purchase, order, return, exchange, or request information about our services from the Site. We store only very limited, if any, financial information that we collect. Otherwise, all financial information is stored by our payment processor.</p>
+            </section>
+
+            <section id="how-use">
+                <h2>3. How We Use Your Information</h2>
+                <p>Having accurate information about you permits us to provide you with a smooth, efficient, and customized experience. Specifically, we may use information collected about you via the Site to:</p>
+                <ul>
+                    <li>Create and manage your account.</li>
+                    <li>Process your payments and refunds.</li>
+                    <li>Email you regarding your account or order.</li>
+                    <li>Fulfill and manage purchases, orders, payments, and other transactions related to the Site.</li>
+                    <li>Generate a personal profile about you to make future visits to the Site more personalized.</li>
+                    <li>Increase the efficiency and operation of the Site.</li>
+                    <li>Monitor and analyze usage and trends to improve your experience with the Site.</li>
+                    <li>Prevent fraudulent transactions, monitor against theft, and protect against criminal activity.</li>
+                </ul>
+            </section>
+
+            <section id="sharing">
+                <h2>4. Disclosure of Your Information</h2>
+                <p>We may share information we have collected about you in certain situations. Your information may be disclosed as follows:</p>
+                
+                <h3>By Law or to Protect Rights</h3>
+                <p>If we believe the release of information about you is necessary to respond to legal process, to investigate or remedy potential violations of our policies, or to protect the rights, property, and safety of others, we may share your information as permitted or required by any applicable law, rule, or regulation.</p>
+
+                <h3>Third-Party Service Providers</h3>
+                <p>We may share your information with third parties that perform services for us or on our behalf, including payment processing, data analysis, email delivery, hosting services, customer service, and marketing assistance.</p>
+            </section>
+
+            <section id="cookies">
+                <h2>5. Cookies and Tracking Technologies</h2>
+                <p>We may use cookies, web beacons, tracking pixels, and other tracking technologies on the Site to help customize the Site and improve your experience. When you access the Site, your personal information is not collected through the use of tracking technology. Most browsers are set to accept cookies by default. You can remove or reject cookies, but be aware that such action could affect the availability and functionality of the Site.</p>
+            </section>
+
+            <section id="security">
+                <h2>6. Data Security</h2>
+                <p>We use administrative, technical, and physical security measures to help protect your personal information. While we have taken reasonable steps to secure the personal information you provide to us, please be aware that despite our efforts, no security measures are perfect or impenetrable, and no method of data transmission can be guaranteed against any interception or other type of misuse.</p>
+            </section>
+
+            <section id="rights">
+                <h2>7. Your Rights Regarding Your Data</h2>
+                <p>Depending on your location, you may have the following rights regarding your personal data:</p>
+                <ul>
+                    <li><strong>The right to access:</strong> You have the right to request copies of your personal data.</li>
+                    <li><strong>The right to rectification:</strong> You have the right to request that we correct any information you believe is inaccurate.</li>
+                    <li><strong>The right to erasure:</strong> You have the right to request that we erase your personal data, under certain conditions.</li>
+                    <li><strong>The right to restrict processing:</strong> You have the right to request that we restrict the processing of your personal data.</li>
+                </ul>
+            </section>
+
+            <section id="children">
+                <h2>8. Policy for Children</h2>
+                <p>We do not knowingly solicit information from or market to children under the age of 13. If you become aware that any data has been collected from children under the age of 13, please contact us using the contact information provided below.</p>
+            </section>
+
+            <section id="changes">
+                <h2>9. Changes to This Privacy Policy</h2>
+                <p>We may update this Privacy Policy from time to time in order to reflect, for example, changes to our practices or for other operational, legal, or regulatory reasons. We will notify you of any changes by posting the new Privacy Policy on this page. You are advised to review this Privacy Policy periodically for any changes.</p>
+            </section>
+
+            <section id="contact">
+                <h2>10. Contact Us</h2>
+                <p>If you have questions or comments about this Privacy Policy, please contact us at:</p>
+                <p>
+                    <strong>Gart Inc.</strong><br>
+                    123 Innovation Drive<br>
+                    Lagos, Nigeria<br><br>
+                    Email: <a href="mailto:privacy@gart.io" class="email-link">privacy@gart.io</a><br>
+                    Phone: +234 800 GART HELP
+                </p>
+            </section>
+
+        </main>
+    </div>
+
+    <footer class="simple-footer">
+        &copy; 2026 Gart Inc. All rights reserved. | <a href="home.html" style="color: #777;">Return to Home</a>
+    </footer>
+
+    <script>
+        // Smooth scrolling for sidebar links
+        document.querySelectorAll('.sidebar-nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+                
+                // Active state handling
+                document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

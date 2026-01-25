@@ -13,6 +13,7 @@
     "body-parser": "^2.2.2",
     "cors": "^2.8.5",
     "express": "^5.2.1",
-    "mongoose": "^8.21.0"
+    "mongoose": "^8.21.0",
+    "multer": "^2.0.2"
   }
 }

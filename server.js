@@ -34,6 +34,74 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+
+// --- 1. SETUP MULTER (For Image Uploads) ---
+const multer = require('multer');
+const path = require('path');
+
+// Configure where to save images
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/uploads/') // Save to 'public/uploads' folder
+    },
+    filename: (req, file, cb) => {
+        // Rename file to avoid duplicates (e.g., 1745382-myimage.png)
+        cb(null, Date.now() + '-' + file.originalname); 
+    }
+});
+const upload = multer({ storage: storage });
+
+// --- 2. PRODUCT SCHEMA ---
+const productSchema = new mongoose.Schema({
+    title: String,
+    price: Number,
+    condition: String,
+    category: String,
+    description: String,
+    images: [String], // We will store an array of image filenames
+    sellerEmail: String, // To know who sold it
+    createdAt: { type: Date, default: Date.now }
+});
+
+const Product = mongoose.model('Product', productSchema);
+
+// --- 3. ROUTES ---
+
+// POST: Save a new product (Supports up to 5 images)
+app.post('/api/products', upload.array('images', 5), async (req, res) => {
+    try {
+        const { title, price, condition, category, description, sellerEmail } = req.body;
+        
+        // Get filenames from the uploaded files
+        const imageFilenames = req.files.map(file => file.filename);
+
+        const newProduct = new Product({
+            title,
+            price,
+            condition,
+            category,
+            description,
+            sellerEmail,
+            images: imageFilenames
+        });
+
+        await newProduct.save();
+        res.json({ success: true, message: "Product listed successfully!" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Error saving product" });
+    }
+});
+
+// GET: Fetch all products
+app.get('/api/products', async (req, res) => {
+    try {
+        const products = await Product.find().sort({ createdAt: -1 }); // Newest first
+        res.json({ success: true, products });
+    } catch (error) {
+        res.status(500).json({ success: false });
+    }
+});
 // --- ROUTES ---
 
 // 1. SIGNUP
@@ -158,6 +226,20 @@ app.post('/update-profile', async (req, res) => {
         res.json({ success: true });
     } catch (error) {
         res.status(500).json({ success: false, message: "Update failed" });
+    }
+});
+
+// GET: Fetch a SINGLE product by ID
+app.get('/api/products/:id', async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+        if (product) {
+            res.json({ success: true, product });
+        } else {
+            res.status(404).json({ success: false, message: "Product not found" });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server error" });
     }
 });
 

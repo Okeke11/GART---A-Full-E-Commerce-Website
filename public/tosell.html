@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell on Gart - Grow Your Business</title>
+    <link rel="icon" type="image/png" href="images/gart-logo.png">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- TOSELL PAGE STYLES (Gart Theme Edition) --- */
+        
+        /* 1. Hero Banner - Now in Gart Blue */
+        .sell-hero {
+            /* Gradient: Primary Blue to Dark Blue */
+            background: linear-gradient(135deg, #3498db, #2980b9); 
+            height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10%;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 50px;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        /* Button: White to stand out against Blue */
+        .start-selling-btn {
+            background-color: #ffffff; 
+            color: #3498db; /* Text is blue */
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.3s;
+            display: inline-block;
+        }
+
+        .start-selling-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        /* Decorative background circle */
+        .hero-circle {
+            position: absolute;
+            right: -50px;
+            bottom: -50px;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .hero-image {
+            font-size: 12rem;
+            color: rgba(255,255,255,0.15);
+        }
+
+        /* 2. "Why Sell" Grid */
+        .benefits-section {
+            max-width: 1000px;
+            margin: 0 auto 80px;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .benefits-section h2 {
+            font-size: 2rem;
+            color: #2c3e50; /* Dark header text */
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .benefit-card {
+            background-color: white;
+            border: 1px solid #e0e0e0; /* Clean border */
+            border-top: 5px solid #3498db; /* Blue Accent Top */
+            padding: 40px 20px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 180px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            transition: transform 0.3s, border-color 0.3s;
+            cursor: default;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            border-top-color: #2c3e50; /* Darkens on hover */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        .benefit-icon {
+            font-size: 2.5rem;
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+
+        .benefit-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .benefit-card p {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            line-height: 1.4;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sell-hero {
+                flex-direction: column;
+                text-align: center;
+                justify-content: center;
+                height: auto;
+                padding: 60px 20px;
+            }
+            .hero-image { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <i class="fa-solid fa-bars" id="hamburger-btn"></i>
+            <a href="home.html">
+                <img src="images/gart-logo.png" alt="Gart Logo" style="height: 40px; margin-left: 15px; border-radius: 50%;">
+            </a>
+        </div>
+        <div class="nav-right">
+            <div class="icon-container"><i class="fa-solid fa-cart-shopping"></i></div>
+            <div class="icon-container">
+                <a href="notification.html" style="color: inherit;">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="badge" id="notif-badge" style="display: none;">0</span>
+                </a>
+            </div>
+            <div class="icon-container">
+                <a href="profile.html" style="color: inherit;"><i class="fa-solid fa-user"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3> <i class="fa-solid fa-xmark" id="close-btn"></i>
+        </div>
+        <ul class="sidebar-links">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="tosell.html" style="background-color: #34495e;">Sell</a></li>
+            <li><a href="#">Categories</a></li>
+            <li><a href="about.html">About</a></li>
+            <li style="margin-top: auto;"><a href="login.html" id="logout-btn">Logout</a></li>
+        </ul>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <div class="sell-hero">
+        <div class="hero-text">
+            <h1>Start Selling on Gart</h1>
+            <p>Turn your items into cash securely. Reach buyers instantly.</p>
+            <a href="sell_phone_verify.html" class="start-selling-btn">Create Listing</a>
+        </div>
+        
+        <i class="fa-solid fa-chart-line hero-image"></i>
+        <div class="hero-circle"></div>
+    </div>
+
+    <div class="benefits-section">
+        <h2>Why Choose Gart?</h2>
+        
+        <div class="benefits-grid">
+            
+            <div class="benefit-card">
+                <i class="fa-solid fa-wallet benefit-icon"></i>
+                <h3>Zero Listing Fees</h3>
+                <p>It's completely free to post an ad. We only win when you win.</p>
+            </div>
+
+            <div class="benefit-card">
+                <i class="fa-solid fa-shield-halved benefit-icon"></i>
+                <h3>Secure Escrow</h3>
+                <p>We hold payments until the item is delivered, protecting both you and the buyer.</p>
+            </div>
+
+            <div class="benefit-card">
+                <i class="fa-solid fa-users benefit-icon"></i>
+                <h3>Verified Buyers</h3>
+                <p>Deal with real people. Our identity checks keep the scammers away.</p>
+            </div>
+
+            <div class="benefit-card">
+                <i class="fa-solid fa-bolt benefit-icon"></i>
+                <h3>Instant Payouts</h3>
+                <p>Get your money directly to your bank account immediately after the sale confirms.</p>
+            </div>
+
+            <div class="benefit-card">
+                <i class="fa-solid fa-globe benefit-icon"></i>
+                <h3>Global & Local</h3>
+                <p>Sell to students on campus or ship to buyers in other cities effortlessly.</p>
+            </div>
+
+            <div class="benefit-card">
+                <i class="fa-solid fa-headset benefit-icon"></i>
+                <h3>24/7 Seller Support</h3>
+                <p>Our dedicated team is always available to help you optimize your sales.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>About Gart</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="careers.html">Careers</a></li>
+                    <li><a href="press.html">Press</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="#">Track Order</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="privacy_policy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="shipping_info.html">Shipping Info</a></li>
+                    <li><a href="payment_option.html">Payment Options</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Gart Inc. Shop Global. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

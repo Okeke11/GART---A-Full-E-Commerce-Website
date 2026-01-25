@@ -17,12 +17,270 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #ffffff;
-    padding: 15px 25px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 15px 30px;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
+    gap: 20px; /* Spacing between Logo, Search, and Icons */
+}
+
+.nav-center {
+    flex-grow: 1; /* Takes up all available space */
+    max-width: 600px; /* But stops getting too wide */
+    display: flex;
+    align-items: center;
+}
+
+.search-box {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    border: 2px solid #ecf0f1;
+    border-radius: 50px; /* Capsule shape */
+    background: #f9f9f9;
+    padding: 5px 20px;
+    transition: all 0.3s ease;
+}
+
+.search-box:focus-within {
+    border-color: #3498db; /* Blue border when typing */
+    background: white;
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.1);
+}
+
+.search-box input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    color: #333;
+}
+
+.search-box button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #7f8c8d;
+    font-size: 1.1rem;
+    transition: color 0.2s;
+}
+
+.search-box button:hover {
+    color: #3498db;
+}
+
+/* Product Grid */
+/* --- PRODUCT GRID LAYOUT --- */
+
+/* Default (Mobile First) - 2 Columns */
+.product-grid {
+    display: grid;
+    /* 2 equal columns */
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 15px; /* Smaller gap for mobile to save space */
+    padding: 20px 10px;
+}
+
+/* Tablet (iPad etc.) - 3 Columns */
+@media (min-width: 600px) {
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+}
+
+/* Desktop (Laptop/PC) - 4 Columns */
+@media (min-width: 1024px) {
+    .product-grid {
+        /* 4 equal columns */
+        grid-template-columns: repeat(4, 1fr); 
+        gap: 30px; /* Bigger gap looks better on big screens */
+        padding: 20px 0;
+    }
+}
+/* The Product Card */
+.product-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    overflow: hidden;
+    transition: transform 0.3s;
+    border: 1px solid #eee;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Image Slider inside Card */
+.card-image-container {
+    height: 200px;
+    position: relative;
+    background: #f9f9f9;
+    overflow: hidden;
+}
+
+.card-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Keeps aspect ratio */
+    position: absolute;
+    top: 0; left: 0;
+    transition: opacity 0.3s;
+    opacity: 0; /* Hidden by default */
+}
+
+.card-image-container img.active {
+    opacity: 1; /* Show active image */
+}
+
+/* Slider Arrows */
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    opacity: 0; /* Hidden until hover */
+    transition: opacity 0.2s;
+}
+
+.product-card:hover .slider-btn { opacity: 1; }
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
+
+/* Card Info */
+.card-info {
+    padding: 15px;
+}
+
+.card-info h3 {
+    font-size: 1rem;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-price {
+    color: #3498db; /* Gart Blue */
+    font-weight: 800;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.add-cart-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.add-cart-btn:hover { background-color: #3498db; }
+
+.footer {
+    background-color: #f8f9fa;
+    padding: 30px 0 15px;
+    margin-top: 150px; 
+    border-top: 1px solid #e9ecef;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+    gap: 20px; 
+}
+
+.footer-col h4 {
+    color: #2c3e50;
+    font-size: 0.95rem; 
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-col ul li {
+    margin-bottom: 8px;
+}
+
+.footer-col ul li a {
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.3s;
+}
+
+.footer-col ul li a:hover {
+    color: #3498db;
+    padding-left: 3px;
+}
+
+/* Social Icons */
+.social-links {
+    display: flex;
+    gap: 10px;
+}
+
+.social-links a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px; /* Smaller circles */
+    height: 32px; 
+    font-size: 0.9rem; /* Smaller icons */
+    background: white;
+    color: #2c3e50;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: all 0.3s;
+}
+
+.social-links a:hover {
+    background: #3498db;
+    color: white;
+    transform: translateY(-3px);
+}
+
+/* Copyright Bar */
+.footer-bottom {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 15px;
+    border-top: 1px solid #e9ecef;
+    color: #adb5bd;
+    font-size: 0.75rem; /* Very small copyright text */
+}
+
+@media (max-width: 768px) {
+    .nav-center {
+        display: none; /* Or move it below the navbar */
+    }
 }
 
 .nav-left {

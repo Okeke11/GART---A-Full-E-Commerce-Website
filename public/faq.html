@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Gart</title>
+    <link rel="icon" type="image/png" href="images/gart-logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --text-color: #2c3e50;
+            --bg-color: #f4f6f8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-color);
+            background: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+            color: var(--primary-color);
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .faq-header h1 {
+            font-size: 2.5rem;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        .faq-header p {
+            color: #7f8c8d;
+        }
+
+        /* Accordion Styles */
+        .faq-item {
+            background: white;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-color);
+            transition: background 0.2s;
+        }
+
+        .faq-question:hover {
+            background-color: #fafafa;
+        }
+
+        .faq-question i {
+            transition: transform 0.3s;
+            color: var(--primary-color);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background-color: #fcfcfc;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .faq-answer p {
+            padding: 25px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Active State */
+        .faq-item.active .faq-answer {
+            max-height: 200px; /* Adjust if answer is very long */
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .faq-item.active .faq-question {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+
+    <a href="home.html" class="back-btn">
+        <i class="fa-solid fa-arrow-left"></i> Back to Home
+    </a>
+
+    <div class="faq-container">
+        
+        <div class="faq-header">
+            <h1>Frequently Asked Questions</h1>
+            <p>Everything you need to know about buying and selling on Gart.</p>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                How do I start selling on Gart?
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>To start selling, create an account and click on the "Sell" button in the menu. You'll need to upload details of your product, set a price, and add clear images. Once approved, your item will be live on the marketplace.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                How long does shipping take?
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>Shipping times vary by location and seller. Standard delivery within major cities typically takes 3-5 business days, while express options are available for 1-2 day delivery.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                Is my payment information secure?
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>Absolutely. We use industry-standard SSL encryption to protect your data. We do not store your full credit card details on our servers, and all payments are processed through secure gateways.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                Can I return an item?
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>Yes, we offer a 7-day return policy for items that are defective or not as described. Please visit our "Returns" page for the full terms and conditions.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                How do I contact customer support?
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>You can contact us via our Contact Us page, email us at support@gart.io, or call our helpline. Our team is available Mon-Fri from 8 AM to 6 PM.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Simple script to toggle accordion
+        const items = document.querySelectorAll('.faq-item');
+
+        items.forEach(item => {
+            item.addEventListener('click', () => {
+                // Close others (optional - remove if you want multiple open)
+                items.forEach(otherItem => {
+                    if (otherItem !== item) otherItem.classList.remove('active');
+                });
+                
+                // Toggle current
+                item.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>

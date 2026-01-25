@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Press - Gart</title>
+    <link rel="icon" type="image/png" href="images/gart-logo.png">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .press-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            flex: 1; /* Pushes footer down */
+        }
+
+        .press-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .press-header h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .press-header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        /* Empty State Styling */
+        .empty-news {
+            background-color: #f8f9fa;
+            border: 2px dashed #e0e0e0;
+            border-radius: 15px;
+            padding: 60px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .empty-news i {
+            font-size: 3rem;
+            color: #bdc3c7;
+            margin-bottom: 20px;
+        }
+
+        .empty-news h3 {
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        /* Media Kit & Contact Section */
+        .media-resources {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 50px;
+        }
+
+        .resource-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+        }
+
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .resource-card p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .download-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .contact-link {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <i class="fa-solid fa-bars" id="hamburger-btn"></i>
+            <a href="home.html">
+                <img src="images/gart-logo.png" alt="Gart Logo" style="height: 40px; margin-left: 15px; border-radius: 50%;">
+            </a>
+        </div>
+        <div class="nav-right">
+            <div class="icon-container"><i class="fa-solid fa-cart-shopping"></i></div>
+            <div class="icon-container">
+                <a href="notification.html" style="color: inherit;">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="badge" id="notif-badge" style="display: none;">0</span>
+                </a>
+            </div>
+            <div class="icon-container">
+                <a href="profile.html" style="color: inherit;"><i class="fa-solid fa-user"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3> <i class="fa-solid fa-xmark" id="close-btn"></i>
+        </div>
+        <ul class="sidebar-links">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="tosell.html">Sell</a></li>
+            <li><a href="#">Categories</a></li>
+            <li><a href="about.html">About</a></li>
+            <li style="margin-top: auto;"><a href="login.html" id="logout-btn">Logout</a></li>
+        </ul>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <div class="press-wrapper">
+        
+        <div class="press-header">
+            <h1>Gart Newsroom</h1>
+            <p>Latest updates, press releases, and company announcements.</p>
+        </div>
+
+        <div class="empty-news">
+            <i class="fa-regular fa-newspaper"></i>
+            <h3>No press releases available at the moment.</h3>
+        </div>
+
+        <div class="media-resources">
+            
+            <div class="resource-card">
+                <h3><i class="fa-solid fa-images" style="color: #e67e22;"></i> Brand Assets</h3>
+                <p>Download our official logos, icon packs, and brand guidelines for media use.</p>
+                <a href="images/gart-logo.png" download class="download-btn">Download Logo</a>
+            </div>
+
+            <div class="resource-card">
+                <h3><i class="fa-solid fa-envelope" style="color: #3498db;"></i> Media Contact</h3>
+                <p>For interview requests or additional information, please contact our PR team.</p>
+                <p><strong>Email:</strong> <a href="mailto:press@gart.io" class="contact-link">press@gart.io</a></p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>About Gart</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="careers.html">Careers</a></li>
+                    <li><a href="press.html" style="color: #3498db;">Press</a>
+                    </li> <li><a href="blog.html">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="#">Track Order</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="privacy_policy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="shipping_info.html">Shipping Info</a></li>
+                    <li><a href="payment_option.html">Payment Options</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Gart Inc. Shop Global. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

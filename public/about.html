@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Gart</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="about.css">
+    <link rel="icon" type="image/png" href="images/gart-logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <i class="fa-solid fa-bars" id="hamburger-btn"></i>
+            <img src="images/gart-logo.png" alt="Gart Logo" style="height: 40px; margin-left: 15px; border-radius: 50%;">
+        </div>
+        <div class="nav-right">
+            <div class="icon-container"><i class="fa-solid fa-cart-shopping"></i></div>
+            
+            <div class="icon-container">
+                <a href="notification.html" style="color: inherit;">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="badge" id="notif-badge" style="display: none;">0</span>
+                </a>
+            </div>
+            
+            <div class="icon-container">
+                <a href="profile.html" style="color: inherit;"><i class="fa-solid fa-user"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3> <i class="fa-solid fa-xmark" id="close-btn"></i>
+        </div>
+        <ul class="sidebar-links">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="tosell.html">Sell</a></li>
+            <li><a href="#">Categories</a></li>
+            <li><a href="about.html" style="background-color: #34495e;">About</a></li>
+            <li style="margin-top: auto;"><a href="login.html" id="logout-btn">Logout</a></li>
+        </ul>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <div class="about-wrapper">
+        
+        <div class="about-hero">
+            <h1>Redefining E-Commerce</h1>
+            <p>Gart is more than just a marketplace. It's a community built on trust, speed, and innovation.</p>
+        </div>
+
+        <div class="founder-section">
+            <div class="founder-img-box">
+                <img src="images/founder.jpg" alt="Okeke Chiagozie" onerror="this.src='https://via.placeholder.com/250?text=Founder+Image'">
+            </div>
+            <div class="founder-text">
+                <h2>Our Inspiration</h2>
+                <p>
+                    Gart was created as an inspiration by <span class="founder-name">Okeke Chiagozie</span>. 
+                    Driven by a passion for technology and a vision to simplify digital trade, 
+                    Chiagozie set out to build a platform that puts the user first.
+                </p>
+                <p>
+                    What started as a simple idea has evolved into a robust ecosystem where buyers 
+                    find value and sellers find growth. At Gart, we believe that technology should 
+                    empower people, not complicate their lives.
+                </p>
+            </div>
+        </div>
+
+        <h2 style="text-align: center; color: #2c3e50; margin-top: 50px;">Why Choose Gart?</h2>
+        <div class="features-grid">
+            
+            <div class="feature-card">
+                <i class="fa-solid fa-rocket feature-icon"></i>
+                <h3>Lightning Fast</h3>
+                <p>Experience optimized performance with zero lag. From browsing to checkout, Gart is built for speed.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fa-solid fa-shield-halved feature-icon"></i>
+                <h3>Secure Payments</h3>
+                <p>Your security is our priority. We use advanced encryption to ensure every transaction is safe.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fa-solid fa-layer-group feature-icon"></i>
+                <h3>Wide Variety</h3>
+                <p>From gadgets to furniture, find everything you need in one place with our diverse catalog.</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fa-solid fa-headset feature-icon"></i>
+                <h3>24/7 Support</h3>
+                <p>Our dedicated support team is always available to assist you with any inquiries or issues.</p>
+            </div>
+
+        </div>
+
+    </div>
+    <footer class="footer">
+        <div class="footer-container">
+            
+            <div class="footer-col">
+                <h4>About Gart</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="careers.html">Careers</a></li>
+                    <li><a href="press.html">Press</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="#">Track Order</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="privacy_policy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="shipping_info.html">Shipping Info</a></li>
+                    <li><a href="payment_option.html">Payment Options</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Gart. Shop Global. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

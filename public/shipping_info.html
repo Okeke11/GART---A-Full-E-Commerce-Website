@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shipping Information - Gart</title>
+    <link rel="icon" type="image/png" href="images/gart-logo.png">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .info-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            flex: 1;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .page-header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        /* Shipping Table */
+        .shipping-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .shipping-table th, .shipping-table td {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .shipping-table th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+
+        .shipping-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Info Cards */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        .info-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .icon-blue { color: #3498db; }
+        .icon-orange { color: #e67e22; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <i class="fa-solid fa-bars" id="hamburger-btn"></i>
+            <a href="home.html">
+                <img src="images/gart-logo.png" alt="Gart Logo" style="height: 40px; margin-left: 15px; border-radius: 50%;">
+            </a>
+        </div>
+        <div class="nav-right">
+            <div class="icon-container"><i class="fa-solid fa-cart-shopping"></i></div>
+            <div class="icon-container">
+                <a href="notification.html" style="color: inherit;">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="badge" id="notif-badge" style="display: none;">0</span>
+                </a>
+            </div>
+            <div class="icon-container">
+                <a href="profile.html" style="color: inherit;"><i class="fa-solid fa-user"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3> <i class="fa-solid fa-xmark" id="close-btn"></i>
+        </div>
+        <ul class="sidebar-links">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="tosell.html">Sell</a></li>
+            <li><a href="#">Categories</a></li>
+            <li><a href="about.html">About</a></li>
+            <li style="margin-top: auto;"><a href="login.html" id="logout-btn">Logout</a></li>
+        </ul>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <div class="info-wrapper">
+        
+        <div class="page-header">
+            <h1>Shipping & Delivery</h1>
+            <p>Fast, reliable shipping to your doorstep.</p>
+        </div>
+
+        <table class="shipping-table">
+            <thead>
+                <tr>
+                    <th>Shipping Method</th>
+                    <th>Estimated Delivery</th>
+                    <th>Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Standard Delivery</strong></td>
+                    <td>3 - 5 Business Days</td>
+                    <td>₦ 1,500</td>
+                </tr>
+                <tr>
+                    <td><strong>Express Delivery</strong></td>
+                    <td>1 - 2 Business Days</td>
+                    <td>₦ 3,500</td>
+                </tr>
+                <tr>
+                    <td><strong>International Shipping</strong></td>
+                    <td>7 - 14 Business Days</td>
+                    <td>Calculated at Checkout</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="info-grid">
+            <div class="info-card">
+                <h3><i class="fa-solid fa-location-dot icon-blue"></i> Tracking Orders</h3>
+                <p>Once your order has shipped, you will receive a confirmation email with a tracking number. You can track your package directly on our website under "My Orders".</p>
+            </div>
+            
+            <div class="info-card">
+                <h3><i class="fa-solid fa-globe icon-orange"></i> Customs & Duties</h3>
+                <p>For international orders, customs duties and taxes are not included in the shipping price. These fees are the responsibility of the customer upon delivery.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>About Gart</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="careers.html">Careers</a></li>
+                    <li><a href="press.html">Press</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="#">Track Order</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="privacy_policy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="shipping_info.html" style="color: #3498db;">Shipping Info</a></li> <li><a href="payment_option.html">Payment Options</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Gart Inc. Shop Global. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

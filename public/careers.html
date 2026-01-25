@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers - Gart</title>
+    <link rel="icon" type="image/png" href="images/gart-logo.png">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Specific styles for the Careers Empty State */
+        .careers-wrapper {
+            max-width: 800px;
+            margin: 60px auto;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 5rem;
+            color: #ecf0f1; /* Very light gray */
+            margin-bottom: 30px;
+        }
+
+        .careers-title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .careers-message {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            background-color: #f8f9fa;
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 50px; /* Capsule shape */
+            border: 1px dashed #bdc3c7;
+        }
+
+        .notify-box {
+            margin-top: 40px;
+        }
+
+        .notify-text {
+            color: #95a5a6;
+            margin-bottom: 15px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <i class="fa-solid fa-bars" id="hamburger-btn"></i>
+            <a href="home.html">
+                <img src="images/gart-logo.png" alt="Gart Logo" style="height: 40px; margin-left: 15px; border-radius: 40%;">
+            </a>
+        </div>
+        <div class="nav-right">
+            <div class="icon-container"><i class="fa-solid fa-cart-shopping"></i></div>
+            
+            <div class="icon-container">
+                <a href="notification.html" style="color: inherit;">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="badge" id="notif-badge" style="display: none;">0</span>
+                </a>
+            </div>
+            
+            <div class="icon-container">
+                <a href="profile.html" style="color: inherit;"><i class="fa-solid fa-user"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3> <i class="fa-solid fa-xmark" id="close-btn"></i>
+        </div>
+        <ul class="sidebar-links">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="tosell.html">Sell</a></li>
+            <li><a href="#">Categories</a></li>
+            <li><a href="about.html">About</a></li>
+            <li style="margin-top: auto;"><a href="login.html" id="logout-btn">Logout</a></li>
+        </ul>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <div class="careers-wrapper">
+        
+        <i class="fa-solid fa-briefcase empty-state-icon"></i>
+        
+        <h1 class="careers-title">Join the Team</h1>
+        
+        <div class="careers-message">
+            None available at the moment
+        </div>
+
+        <div class="notify-box">
+            <p class="notify-text">We are always growing. Check back soon for updates!</p>
+            <a href="home.html" class="back-btn">Return to Shop</a>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>About Gart</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="careers.html" style="color: #3498db;">Careers</a></li> 
+                    <li><a href="press.html">Press</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="#">Track Order</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="privacy_policy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="shipping_info.html">Shipping Info</a></li>
+                    <li><a href="payment_option.html">Payment Options</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Gart Inc. Shop Global. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
