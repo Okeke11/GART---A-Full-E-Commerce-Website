@@ -43,27 +43,42 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 3. GLOBAL NOTIFICATION SYSTEM (The New Part) ---
+    // --- 3. GLOBAL NOTIFICATION SYSTEM ---
     manageNotifications();
+
+    // --- 4. SHOPPING CART BADGE ---
+    updateCartBadge(); // Check cart immediately on load
+
+    // --- 5. LOAD PRODUCTS (Only if on home page) ---
+    if(document.querySelector('.main-content')) {
+        loadProducts();
+    }
+
+    // Setup Category Filter Buttons (Dropdown)
+    const categoryLinks = document.querySelectorAll('#category-dropdown a');
+    categoryLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const selectedCategory = e.target.textContent.toLowerCase().trim(); // e.g., "phones"
+            filterProducts(selectedCategory);
+        });
+    });
 });
 
-// --- UPDATED CLIENT-SIDE NOTIFICATION LOGIC ---
+// --- NOTIFICATION LOGIC ---
 async function manageNotifications() {
-    const email = localStorage.getItem('userEmail'); // Need email to fetch data
+    const email = localStorage.getItem('userEmail'); 
     const badge = document.getElementById('notif-badge');
 
     if (!email) return;
 
     try {
-        // 1. Ask Server for Notifications
         const response = await fetch(`/notifications?email=${email}`);
         const data = await response.json();
 
         if (data.success && data.notifications) {
-            // 2. Count Unseen
             const unseenCount = data.notifications.filter(n => !n.seen).length;
 
-            // 3. Update Badge
             if (badge) {
                 if (unseenCount > 0) {
                     badge.style.display = 'flex';
@@ -80,36 +95,21 @@ async function manageNotifications() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadProducts(); // Load products when page opens
-    
-    // Setup Category Filter Buttons (Dropdown)
-    const categoryLinks = document.querySelectorAll('#category-dropdown a');
-    categoryLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const selectedCategory = e.target.textContent.toLowerCase().trim(); // e.g., "phones"
-            filterProducts(selectedCategory);
-        });
-    });
-});
-
 let allProducts = []; // Store products here
 
 async function loadProducts() {
-    const container = document.querySelector('.main-content'); // Where we put the grid
-    
-    // Clear initial content (like "Welcome to Gart")
-    container.innerHTML = '<h1>Fresh Recommendations</h1><div class="product-grid" id="productGrid"></div>';
-    const grid = document.getElementById('productGrid');
+    const container = document.querySelector('.main-content');
+    if(!container) return; // Guard clause if not on home page
 
+    container.innerHTML = '<h1>Fresh Recommendations</h1><div class="product-grid" id="productGrid"></div>';
+    
     try {
         const response = await fetch('/api/products');
         const data = await response.json();
 
         if (data.success) {
             allProducts = data.products;
-            renderProducts(allProducts); // Show all initially
+            renderProducts(allProducts);
         }
     } catch (err) {
         console.error("Error loading products:", err);
@@ -118,7 +118,8 @@ async function loadProducts() {
 
 function renderProducts(productsToRender) {
     const grid = document.getElementById('productGrid');
-    grid.innerHTML = ''; // Clear grid
+    if(!grid) return;
+    grid.innerHTML = ''; 
 
     if (productsToRender.length === 0) {
         grid.innerHTML = '<p>No products found in this category.</p>';
@@ -126,27 +127,21 @@ function renderProducts(productsToRender) {
     }
 
     productsToRender.forEach(product => {
-        // Create Card HTML
         const card = document.createElement('div');
         card.classList.add('product-card');
 
-        // --- NEW CODE STARTS HERE ---
-        // This makes the whole card clickable
-        card.style.cursor = "pointer"; // Makes the mouse look like a hand
+        // 1. Card Click -> Details Page
+        card.style.cursor = "pointer";
         card.addEventListener('click', (e) => {
-            // Prevent redirect if clicking the "Add to Cart" button
+            // If the user clicked the Add to Cart button, do nothing (handled below)
             if (e.target.classList.contains('add-cart-btn')) return;
-
-            // Go to the details page with the product ID
             window.location.href = `product_details.html?id=${product._id}`;
         });
-        // --- NEW CODE ENDS HERE ---
-        
-        // Generate Image Slides (Hidden by default except first one)
+
+        // 2. Generate Image Slides
         let imagesHtml = '';
         if (product.images.length > 0) {
             product.images.forEach((img, index) => {
-                // Add '/uploads/' before filename
                 imagesHtml += `<img src="/uploads/${img}" class="${index === 0 ? 'active' : ''}" data-index="${index}">`;
             });
         } else {
@@ -168,7 +163,14 @@ function renderProducts(productsToRender) {
             </div>
         `;
 
-        // Add Slider Logic specific to this card
+        // 3. Connect the Add to Cart Button
+        const addBtn = card.querySelector('.add-cart-btn');
+        addBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Stops the click from bubbling up to the card
+            addToCart(product);
+        });
+
+        // 4. Slider Logic
         if (product.images.length > 1) {
             setupCardSlider(card, product.images.length);
         }
@@ -206,8 +208,71 @@ function filterProducts(category) {
     if (category === 'all' || category === 'categories') {
         renderProducts(allProducts);
     } else {
-        // Simple filter based on category string
         const filtered = allProducts.filter(p => p.category.toLowerCase() === category);
         renderProducts(filtered);
     }
+}
+
+// --- SHOPPING CART LOGIC ---
+
+function updateCartBadge() {
+    const cart = JSON.parse(localStorage.getItem('gart_cart')) || [];
+    
+    // Find the cart icon container
+    const cartIcon = document.querySelector('.fa-cart-shopping');
+    if(!cartIcon) return; // Guard clause if icon is missing
+
+    const badgeContainer = cartIcon.parentElement;
+    
+    // Check if we already created a badge element
+    let badgeSpan = badgeContainer.querySelector('.cart-count');
+    
+    if (!badgeSpan) {
+        badgeSpan = document.createElement('span');
+        badgeSpan.className = 'cart-count';
+        // Add styling dynamically
+        badgeSpan.style.position = 'absolute';
+        badgeSpan.style.top = '-8px';
+        badgeSpan.style.right = '-8px';
+        badgeSpan.style.background = '#e74c3c'; // Red
+        badgeSpan.style.color = 'white';
+        badgeSpan.style.borderRadius = '50%';
+        badgeSpan.style.padding = '2px 6px';
+        badgeSpan.style.fontSize = '0.7rem';
+        badgeSpan.style.fontWeight = 'bold';
+        badgeContainer.style.position = 'relative'; // Ensure container is relative
+        badgeContainer.appendChild(badgeSpan);
+    }
+
+    if (cart.length > 0) {
+        badgeSpan.style.display = 'block';
+        badgeSpan.textContent = cart.length;
+    } else {
+        badgeSpan.style.display = 'none';
+    }
+}
+
+function addToCart(product) {
+    // 1. Get existing cart
+    let cart = JSON.parse(localStorage.getItem('gart_cart')) || [];
+
+    // 2. Check if item exists (Prevent duplicates)
+    const existingItem = cart.find(item => item._id === product._id);
+    
+    if (existingItem) {
+        alert("Item is already in your cart!");
+        return;
+    }
+
+    // 3. Add item
+    cart.push(product);
+
+    // 4. Save back to storage
+    localStorage.setItem('gart_cart', JSON.stringify(cart));
+
+    // 5. Update UI
+    updateCartBadge();
+    
+    // Optional: Visual feedback
+    alert("Item added to cart!");
 }

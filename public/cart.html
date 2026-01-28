@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart - Gart</title>
+    <link rel="icon" type="image/png" href="images/gart-logo.png">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* CART PAGE STYLES */
+        .cart-wrapper {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 40px;
+            min-height: 60vh;
+        }
+
+        /* Left: Cart Items */
+        .cart-list-section {
+            flex: 2;
+        }
+
+        .cart-header {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 20px;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .cart-item:hover {
+            border-color: #3498db;
+        }
+
+        .item-img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-details h3 {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .item-price {
+            color: #3498db;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .remove-btn {
+            background: #ffebeb;
+            color: #e74c3c;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .remove-btn:hover {
+            background: #e74c3c;
+            color: white;
+        }
+
+        /* Right: Summary Box */
+        .cart-summary-section {
+            flex: 1;
+        }
+
+        .summary-box {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            position: sticky;
+            top: 100px; /* Sticks when scrolling */
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .summary-row.total {
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+            font-weight: 800;
+            color: #2c3e50;
+            font-size: 1.2rem;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+
+        .checkout-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Empty State */
+        .empty-cart-msg {
+            text-align: center;
+            padding: 50px;
+            color: #7f8c8d;
+        }
+
+        @media (max-width: 800px) {
+            .cart-wrapper { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="home.html">
+                <img src="images/gart-logo.png" alt="Gart Logo" style="height: 40px; margin-left: 15px; border-radius: 50%;">
+            </a>
+            <a href="home.html" style="margin-left: 20px; text-decoration: none; color: #555; font-weight: 600;">
+                <i class="fa-solid fa-arrow-left"></i> Continue Shopping
+            </a>
+        </div>
+        <div class="nav-right">
+            <div class="icon-container">
+                <a href="cart.html" style="color: inherit;">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </a>
+            </div>
+            <div class="icon-container">
+                <a href="profile.html" style="color: inherit;"><i class="fa-solid fa-user"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="cart-wrapper">
+        
+        <div class="cart-list-section">
+            <div class="cart-header">Shopping Cart (<span id="item-count">0</span>)</div>
+            <div id="cart-items-container">
+                </div>
+        </div>
+
+        <div class="cart-summary-section">
+            <div class="summary-box">
+                <h3>Order Summary</h3>
+                <br>
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="subtotal-price">₦ 0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span style="font-size: 0.9rem; color: #27ae60;">Calculated at checkout</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span id="total-price">₦ 0</span>
+                </div>
+
+                <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>About Gart</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="careers.html">Careers</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Gart Inc.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', loadCartPage);
+
+        function loadCartPage() {
+            // 1. Get Cart from LocalStorage
+            let cart = JSON.parse(localStorage.getItem('gart_cart')) || [];
+            
+            const container = document.getElementById('cart-items-container');
+            const countSpan = document.getElementById('item-count');
+            
+            // Update Count in Header
+            countSpan.textContent = cart.length;
+
+            // 2. Handle Empty Cart
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-cart-msg">
+                        <i class="fa-solid fa-basket-shopping" style="font-size: 4rem; color: #eee; margin-bottom: 20px;"></i>
+                        <h2>Your cart is empty</h2>
+                        <p>Browse our categories and discover our best deals!</p>
+                        <a href="home.html" style="display:inline-block; margin-top:20px; color:#3498db; font-weight:bold;">Start Shopping</a>
+                    </div>
+                `;
+                updateSummary(0);
+                return;
+            }
+
+            // 3. Render Items
+            container.innerHTML = ''; // Clear loading/old data
+            let total = 0;
+
+            cart.forEach((product, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('cart-item');
+                
+                // Use first image or placeholder
+                const imgUrl = product.images.length > 0 ? `/uploads/${product.images[0]}` : 'https://via.placeholder.com/150';
+                
+                // Calculate Total
+                total += Number(product.price);
+
+                itemDiv.innerHTML = `
+                    <img src="${imgUrl}" class="item-img" alt="${product.title}">
+                    <div class="item-details">
+                        <h3>${product.title}</h3>
+                        <p style="color: #7f8c8d; font-size: 0.9rem;">Condition: ${product.condition}</p>
+                        <div class="item-price">₦ ${parseInt(product.price).toLocaleString()}</div>
+                    </div>
+                    <button class="remove-btn" onclick="removeFromCart(${index})">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                `;
+                container.appendChild(itemDiv);
+            });
+
+            // 4. Update Summary Box
+            updateSummary(total);
+        }
+
+        function updateSummary(total) {
+            document.getElementById('subtotal-price').textContent = "₦ " + total.toLocaleString();
+            document.getElementById('total-price').textContent = "₦ " + total.toLocaleString();
+        }
+
+        function removeFromCart(index) {
+            let cart = JSON.parse(localStorage.getItem('gart_cart')) || [];
+            
+            // Remove item at specific index
+            cart.splice(index, 1);
+            
+            // Save back to storage
+            localStorage.setItem('gart_cart', JSON.stringify(cart));
+            
+            // Refresh Page Content
+            loadCartPage();
+            
+            // Update Navbar Badge (Function from script.js)
+            if(typeof updateCartBadge === 'function') {
+                updateCartBadge();
+            }
+        }
+
+        function checkout() {
+            let cart = JSON.parse(localStorage.getItem('gart_cart')) || [];
+            if(cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+            // For now, simple alert
+            alert("Proceeding to secure checkout gateway...");
+            // Future: window.location.href = 'checkout.html';
+        }
+    </script>
+</body>
+</html>
