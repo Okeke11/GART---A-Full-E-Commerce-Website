@@ -205,57 +205,117 @@
         </div>
     </div>
 
-    <script>
-        const getOtpBtn = document.getElementById('getOtpBtn');
-        const otpSection = document.getElementById('otpSection');
-        const phoneInput = document.getElementById('phoneNumber');
-        const otpInput = document.getElementById('otpInput');
-        const verifyForm = document.getElementById('verifyForm');
+<script>
+    const getOtpBtn = document.getElementById('getOtpBtn');
+    const otpSection = document.getElementById('otpSection');
+    const phoneInput = document.getElementById('phoneNumber');
+    const otpInput = document.getElementById('otpInput');
+    const verifyForm = document.getElementById('verifyForm');
 
-        // Step 1: Click "Get Code"
-        getOtpBtn.addEventListener('click', function() {
-            if (phoneInput.value.length < 10) {
-                alert("Please enter a valid phone number.");
-                return;
-            }
+    // Helper to get full number (+234...)
+    function getFullPhone() {
+        // Removes leading '0' if user typed "080..." to avoid "+234080..."
+        let number = phoneInput.value;
+        if (number.startsWith('0')) {
+            number = number.substring(1);
+        }
+        return "+234" + number;
+    }
 
-            // SIMULATION: In a real app, this sends SMS.
-            // Here, we just pretend.
-            getOtpBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
-            getOtpBtn.disabled = true;
+    // 1. SEND OTP (Now Checks Profile)
+    getOtpBtn.addEventListener('click', async function() {
+        const userEmail = localStorage.getItem('userEmail');
 
-            setTimeout(() => {
-                // Show the OTP Alert (Simulating SMS)
-                alert("Gart Security: Your verification code is 1234");
-                
-                // Hide the first button, show the OTP section
+        if (!userEmail) {
+            alert("Please log in first.");
+            window.location.href = 'login.html';
+            return;
+        }
+
+        if (phoneInput.value.length < 10) {
+            alert("Please enter a valid phone number.");
+            return;
+        }
+
+        // UI Feedback
+        getOtpBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking Profile...';
+        getOtpBtn.disabled = true;
+
+        try {
+            const response = await fetch('/send-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    phone: getFullPhone(),
+                    email: userEmail // Sending email so server knows who to check
+                })
+            });
+            
+            const data = await response.json();
+
+            if (data.success) {
+                // Success
                 getOtpBtn.style.display = 'none';
                 otpSection.style.display = 'block';
                 otpInput.focus();
-            }, 1500);
-        });
-
-        // Step 2: Click "Verify"
-        verifyForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const enteredOTP = otpInput.value;
-
-            if (enteredOTP === "1234") {
-                // Success! Redirect to the Sell Page
-                const btn = document.getElementById('verifyBtn');
-                btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Verified!';
-                btn.style.backgroundColor = '#27ae60';
-                
-                setTimeout(() => {
-                    window.location.href = 'sell.html';
-                }, 1000);
+                alert("Match found! Code sent.");
             } else {
-                alert("Incorrect Code. Please try '1234'");
-                otpInput.value = '';
-                otpInput.focus();
+                // Handle Errors
+                getOtpBtn.disabled = false;
+                getOtpBtn.innerHTML = "Get Verification Code";
+
+                if (data.errorType === 'missing_profile') {
+                    // Logic: Redirect if profile is empty
+                    if(confirm("You have not set a phone number in your profile yet. Go to Profile now?")) {
+                        window.location.href = 'profile.html';
+                    }
+                } else {
+                    // Logic: Mismatch or other error
+                    alert(data.message);
+                }
             }
-        });
-    </script>
+        } catch (err) {
+            console.error(err);
+            alert("Server connection failed.");
+            getOtpBtn.disabled = false;
+            getOtpBtn.innerHTML = "Get Verification Code";
+        }
+    });
+
+    // 2. VERIFY OTP (Unchanged logic)
+    verifyForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const enteredOTP = otpInput.value;
+        const verifyBtn = document.getElementById('verifyBtn');
+
+        verifyBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying...';
+
+        try {
+            const response = await fetch('/verify-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    phone: getFullPhone(), 
+                    code: enteredOTP 
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                verifyBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Verified!';
+                verifyBtn.style.backgroundColor = '#27ae60';
+                setTimeout(() => { window.location.href = 'sell.html'; }, 1000);
+            } else {
+                alert("Incorrect Code.");
+                verifyBtn.innerHTML = "Verify & Continue";
+                otpInput.value = '';
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Verification failed.");
+        }
+    });
+</script>
 </body>
 </html>

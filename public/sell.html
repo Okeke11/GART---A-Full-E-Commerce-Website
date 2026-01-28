@@ -160,6 +160,53 @@
             .sell-wrapper { flex-direction: column-reverse; } /* Put info on top on mobile */
             .safety-sidebar { position: static; }
         }
+
+        /* --- NEW VIBRANT BUTTON STYLES --- */
+
+/* The container to separate it from the checklist */
+.sidebar-action-area {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 2px dashed #bdc3c7; /* Dashed line separator */
+    text-align: center;
+}
+
+.my-products-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 16px;
+    /* Vibrant Gradient (Orange to Red) */
+    background: linear-gradient(135deg, #f39c12, #e74c3c); 
+    color: white;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 1.1rem;
+    border-radius: 50px; /* Capsule shape */
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4); /* Glowing shadow */
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy animation */
+}
+
+/* Hover Animation: Lifts up and glows brighter */
+.my-products-btn:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(231, 76, 60, 0.6);
+    background: linear-gradient(135deg, #e67e22, #c0392b);
+}
+
+.my-products-btn i {
+    font-size: 1.3rem;
+    animation: wiggle 2s infinite; /* Icon moves slightly */
+}
+
+@keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    10%, 30% { transform: rotate(-10deg); }
+    20%, 40% { transform: rotate(10deg); }
+    50% { transform: rotate(0deg); }
+}
     </style>
 </head>
 <body>
@@ -190,8 +237,10 @@
             <h3>Menu</h3> <i class="fa-solid fa-xmark" id="close-btn"></i>
         </div>
         <ul class="sidebar-links">
+
             <li><a href="home.html">Home</a></li>
             <li><a href="tosell.html" style="background-color: #34495e;">Sell</a></li>
+
             <li><a href="#">Categories</a></li>
             <li><a href="about.html">About</a></li>
             <li style="margin-top: auto;"><a href="login.html" id="logout-btn">Logout</a></li>
@@ -259,27 +308,33 @@
         </div>
 
         <div class="safety-sidebar">
-            <div class="safety-header">
-                <i class="fa-solid fa-shield-halved" style="font-size: 1.5rem;"></i>
-                <h3>Seller Guidelines</h3>
-            </div>
+    <div class="safety-header">
+        <i class="fa-solid fa-shield-halved" style="font-size: 1.5rem;"></i>
+        <h3>Seller Guidelines</h3>
+    </div>
 
-            <div class="checklist-item">
-                <i class="fa-solid fa-check check-icon"></i>
-                <div class="checklist-text">
-                    <h4>No Stock Photos</h4>
-                    <p>Use real photos of your item. Ads with Google images will be rejected.</p>
-                </div>
-            </div>
-
-            <div class="checklist-item">
+    <div class="checklist-item">
+        <i class="fa-solid fa-check check-icon"></i>
+        <div class="checklist-text">
+            <h4>No Stock Photos</h4>
+            <p>Use real photos of your item. Ads with Google images will be rejected.</p>
+        </div>
+    </div>
+    
+    <div class="checklist-item">
+        <i class="fa-solid fa-check check-icon"></i>
+        <div class="checklist-text">
+            <h4>Meet Safely</h4>
+            <p>If meeting locally, choose a public place like a mall or station.</p>
+        </div>
+    </div>
+    <div class="checklist-item">
                 <i class="fa-solid fa-check check-icon"></i>
                 <div class="checklist-text">
                     <h4>Be Honest</h4>
                     <p>Mention every scratch or issue. It prevents returns and builds trust.</p>
                 </div>
             </div>
-
             <div class="checklist-item">
                 <i class="fa-solid fa-check check-icon"></i>
                 <div class="checklist-text">
@@ -287,17 +342,14 @@
                     <p>Keep all chats and payments inside the app. We can't protect you if you move to WhatsApp.</p>
                 </div>
             </div>
-
-            <div class="checklist-item">
-                <i class="fa-solid fa-check check-icon"></i>
-                <div class="checklist-text">
-                    <h4>Meet Safely</h4>
-                    <p>If meeting locally, choose a public place like a mall or station.</p>
-                </div>
-            </div>
-        </div>
-
+    <div class="sidebar-action-area">
+        <p style="margin-bottom: 15px; color: #555; font-size: 0.9rem;">Already selling?</p>
+        <a href="my_products.html" class="my-products-btn">
+            <i class="fa-solid fa-box-open"></i> Manage Products
+        </a>
     </div>
+    </div>
+</div>
 
     <footer class="footer">
         <div class="footer-container">

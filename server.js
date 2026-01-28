@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
     state: String,
     address: String,
     profilePic: String,
+    phoneNumber: String, // Already here, which is good
     // Notification Fields
     notifications: [{
         title: String,
@@ -39,6 +40,13 @@ const User = mongoose.model('User', userSchema);
 // --- 1. SETUP MULTER (For Image Uploads) ---
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs'); // Added fs to ensure folder exists
+
+// Ensure upload directory exists
+const uploadDir = path.join(__dirname, 'public/uploads');
+if (!fs.existsSync(uploadDir)){
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 // Configure where to save images
 const storage = multer.diskStorage({
@@ -47,7 +55,9 @@ const storage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         // Rename file to avoid duplicates (e.g., 1745382-myimage.png)
-        cb(null, Date.now() + '-' + file.originalname); 
+        // Clean the filename to prevent errors with spaces
+        const uniqueName = Date.now() + '-' + file.originalname.replace(/\s+/g, '-');
+        cb(null, uniqueName);
     }
 });
 const upload = multer({ storage: storage });
@@ -73,8 +83,8 @@ app.post('/api/products', upload.array('images', 5), async (req, res) => {
     try {
         const { title, price, condition, category, description, sellerEmail } = req.body;
         
-        // Get filenames from the uploaded files
-        const imageFilenames = req.files.map(file => file.filename);
+        // Get filenames from the uploaded files (Safe check if files exist)
+        const imageFilenames = req.files ? req.files.map(file => file.filename) : [];
 
         const newProduct = new Product({
             title,
@@ -89,7 +99,7 @@ app.post('/api/products', upload.array('images', 5), async (req, res) => {
         await newProduct.save();
         res.json({ success: true, message: "Product listed successfully!" });
     } catch (error) {
-        console.error(error);
+        console.error("Server Error:", error);
         res.status(500).json({ success: false, message: "Error saving product" });
     }
 });
@@ -103,7 +113,8 @@ app.get('/api/products', async (req, res) => {
         res.status(500).json({ success: false });
     }
 });
-// --- ROUTES ---
+
+// --- USER ROUTES ---
 
 // 1. SIGNUP
 app.post('/signup', async (req, res) => {
@@ -193,7 +204,7 @@ app.post('/clear-notifications', async (req, res) => {
     }
 });
 
-// 5. GET PROFILE (This was missing!)
+// 5. GET PROFILE (UPDATED FOR PHONE NUMBER)
 app.get('/get-profile', async (req, res) => {
     const email = req.query.email;
     try {
@@ -207,6 +218,7 @@ app.get('/get-profile', async (req, res) => {
                 country: user.country || "",
                 state: user.state || "",
                 address: user.address || "",
+                phoneNumber: user.phoneNumber || "", // <--- ADDED THIS
                 profilePic: user.profilePic || ""
             });
         } else {
@@ -217,16 +229,92 @@ app.get('/get-profile', async (req, res) => {
     }
 });
 
-// 6. UPDATE PROFILE (This was also missing!)
+// 6. UPDATE PROFILE (UPDATED FOR PHONE NUMBER)
 app.post('/update-profile', async (req, res) => {
-    const { email, dob, country, state, address, profilePic } = req.body;
+    // Added phoneNumber to the variables we extract from req.body
+    const { email, dob, country, state, address, profilePic, phoneNumber } = req.body;
     try {
         await User.updateOne({ email: email }, { 
-            $set: { dob, country, state, address, profilePic } 
+            $set: { 
+                dob, 
+                country, 
+                state, 
+                address, 
+                profilePic,
+                phoneNumber // <--- ADDED THIS
+            } 
         });
         res.json({ success: true });
     } catch (error) {
         res.status(500).json({ success: false, message: "Update failed" });
+    }
+});
+// --- OTP VERIFICATION ROUTES ---
+
+// In-Memory Storage for OTPs
+const otpStore = {}; 
+
+// 1. SEND OTP (SMART CHECK)
+app.post('/send-otp', async (req, res) => {
+    const { phone, email } = req.body; 
+
+    try {
+        // A. Find the user
+        const user = await User.findOne({ email });
+        
+        if (!user) {
+            return res.json({ success: false, message: "User not found." });
+        }
+
+        // B. Check if Profile has a number
+        if (!user.phoneNumber) {
+            return res.json({ 
+                success: false, 
+                errorType: 'missing_profile', 
+                message: "No phone number found in profile." 
+            });
+        }
+
+        // C. Clean numbers for comparison (Remove spaces, dashes, take last 10 digits)
+        const cleanInput = phone.replace(/\D/g, '').slice(-10);
+        const cleanStored = user.phoneNumber.replace(/\D/g, '').slice(-10);
+
+        // D. Compare
+        if (cleanInput !== cleanStored) {
+            return res.json({ 
+                success: false, 
+                message: "This number does not match the one in your Profile." 
+            });
+        }
+
+        // E. If Match, Proceed to Send OTP
+        const code = Math.floor(1000 + Math.random() * 9000).toString();
+        
+        // LOG CODE TO TERMINAL (Simulating SMS)
+        console.log("--------------------------------------");
+        console.log(`[SMS SERVICE] Sending OTP to ${phone}: ${code}`);
+        console.log("--------------------------------------");
+        
+        otpStore[phone] = code;
+
+        res.json({ success: true, message: "Code sent!" });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server error." });
+    }
+});
+
+// 2. VERIFY OTP
+app.post('/verify-otp', (req, res) => {
+    const { phone, code } = req.body;
+
+    // Check if the phone exists and code matches
+    if (otpStore[phone] && otpStore[phone] === code) {
+        delete otpStore[phone]; // Clear code so it can't be reused
+        res.json({ success: true });
+    } else {
+        res.json({ success: false, message: "Invalid Code" });
     }
 });
 
@@ -241,6 +329,28 @@ app.get('/api/products/:id', async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ success: false, message: "Server error" });
+    }
+});
+
+// GET: Fetch products for a specific seller
+app.get('/api/my-products', async (req, res) => {
+    try {
+        const { email } = req.query;
+        // Find products where sellerEmail matches the request
+        const products = await Product.find({ sellerEmail: email }).sort({ createdAt: -1 });
+        res.json({ success: true, products });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+});
+
+// DELETE: Allow user to delete their own product
+app.delete('/api/products/:id', async (req, res) => {
+    try {
+        await Product.findByIdAndDelete(req.params.id);
+        res.json({ success: true, message: "Product deleted" });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error deleting product" });
     }
 });
 
