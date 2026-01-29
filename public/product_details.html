@@ -217,146 +217,168 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Get Product ID from URL (e.g., product_details.html?id=12345)
-            const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('id');
+    document.addEventListener('DOMContentLoaded', () => {
+        // Get Product ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
 
-            if(productId) {
-                loadProductDetails(productId);
-            } else {
-                alert("No product selected!");
-                window.location.href = 'home.html';
-            }
-        });
+        if(productId) {
+            loadProductDetails(productId);
+        } else {
+            alert("No product selected!");
+            window.location.href = 'home.html';
+        }
+    });
 
-        let currentCategory = ''; // Store to fetch related items
+    async function loadProductDetails(id) {
+        try {
+            const response = await fetch(`/api/products/${id}`);
+            const data = await response.json();
 
-        async function loadProductDetails(id) {
-            try {
-                const response = await fetch(`/api/products/${id}`);
-                const data = await response.json();
+            if (data.success) {
+                const p = data.product;
+                
+                // 1. Render the Main Product
+                renderMainProduct(p);
 
-                if (data.success) {
-                    const p = data.product;
-                    currentCategory = p.category; // Save category for related items
-                    renderMainProduct(p);
+                // 2. Load Related Products (Only if category exists)
+                if (p.category) {
                     loadRelatedProducts(id, p.category);
                 } else {
-                    document.getElementById('productMain').innerHTML = '<h2>Product not found.</h2>';
+                    console.warn("Product has no category, skipping related items.");
+                    document.getElementById('relatedGrid').innerHTML = '<p style="color:#999;">No related products found.</p>';
                 }
-            } catch (err) {
-                console.error(err);
-            }
-        }
 
-        function renderMainProduct(p) {
-            const container = document.getElementById('productMain');
-            
-            // Generate Thumbnails HTML
-            let thumbnailsHtml = '';
+            } else {
+                document.getElementById('productMain').innerHTML = '<h2>Product not found.</h2>';
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    function renderMainProduct(p) {
+        const container = document.getElementById('productMain');
+        
+        // --- A. FORMAT DATES & PHONE ---
+        const dateObj = new Date(p.sellerJoined || Date.now());
+        const memberSince = dateObj.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        
+        // Escape single quotes in phone number to prevent JS errors
+        const safePhone = (p.sellerPhone || "No Number").replace(/'/g, "\\'");
+
+        // --- B. GENERATE IMAGES ---
+        let thumbnailsHtml = '';
+        if(p.images && p.images.length > 0) {
             p.images.forEach((img, index) => {
                 thumbnailsHtml += `<img src="/uploads/${img}" class="thumbnail ${index===0?'active':''}" onclick="changeMainImage('/uploads/${img}', this)">`;
             });
+        }
+        const mainImgSrc = (p.images && p.images.length > 0) ? `/uploads/${p.images[0]}` : 'https://via.placeholder.com/500';
 
-            container.innerHTML = `
-                <div class="gallery-container">
-                    <div class="thumbnail-list">
-                        ${thumbnailsHtml}
-                    </div>
-                    <div class="main-image-box">
-                        <img id="mainImg" src="/uploads/${p.images[0]}" alt="${p.title}">
+        // --- C. RENDER HTML ---
+        container.innerHTML = `
+            <div class="gallery-container">
+                <div class="thumbnail-list">
+                    ${thumbnailsHtml}
+                </div>
+                <div class="main-image-box">
+                    <img id="mainImg" src="${mainImgSrc}" alt="${p.title}">
+                </div>
+            </div>
+
+            <div class="details-info">
+                <h1>${p.title}</h1>
+                <div class="rating">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-regular fa-star-half-stroke"></i>
+                    <span style="color: #7f8c8d; margin-left: 10px;">(4.5 Ratings)</span>
+                </div>
+
+                <span class="details-price">₦ ${parseInt(p.price).toLocaleString()}</span>
+
+                <div class="info-block">
+                    <h3>Description</h3>
+                    <p class="description-text">${p.description}</p>
+                </div>
+
+                <div class="info-block">
+                    <h3>Delivery Address</h3>
+                    <div class="delivery-box">
+                        <label style="font-size: 0.85rem; color: #666;"><i class="fa-solid fa-location-dot"></i> Deliver to:</label>
+                        <input type="text" placeholder="Enter full address (e.g. 12 Babcock Univ Rd...)">
                     </div>
                 </div>
 
-                <div class="details-info">
-                    <h1>${p.title}</h1>
-                    <div class="rating">
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-regular fa-star-half-stroke"></i>
-                        <span style="color: #7f8c8d; margin-left: 10px;">(4.5 Ratings)</span>
-                    </div>
-
-                    <span class="details-price">₦ ${parseInt(p.price).toLocaleString()}</span>
-
-                    <div class="info-block">
-                        <h3>Description</h3>
-                        <p class="description-text">${p.description}</p>
-                    </div>
-
-                    <div class="info-block">
-                        <h3>Delivery Address</h3>
-                        <div class="delivery-box">
-                            <label style="font-size: 0.85rem; color: #666;"><i class="fa-solid fa-location-dot"></i> Deliver to:</label>
-                            <input type="text" placeholder="Enter full address (e.g. 12 Babcock Univ Rd...)">
+                <div class="info-block">
+                    <h3>Seller Info</h3>
+                    <div class="seller-contact">
+                        <div style="flex:1;">
+                            <p style="font-weight:600; color:#333;">Verified Seller</p>
+                            <p style="font-size:0.9rem; color:#666;">Member since ${memberSince}</p>
                         </div>
+                        <button class="reveal-btn" onclick="this.innerText = '${safePhone}'; this.style.backgroundColor='#34495e';">Show Number</button>
                     </div>
-
-                    <div class="info-block">
-                        <h3>Seller Info</h3>
-                        <div class="seller-contact">
-                            <div style="flex:1;">
-                                <p style="font-weight:600; color:#333;">Verified Seller</p>
-                                <p style="font-size:0.9rem; color:#666;">Member since 2024</p>
-                            </div>
-                            <button class="reveal-btn" onclick="this.innerText = '080-123-4567'">Show Number</button>
-                        </div>
-                    </div>
-
-                    <button class="buy-now-btn">Buy Now</button>
                 </div>
-            `;
-        }
 
-        // Image Switcher Logic
-        window.changeMainImage = function(src, thumb) {
-            document.getElementById('mainImg').src = src;
-            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
-            thumb.classList.add('active');
-        }
+                <button class="buy-now-btn">Buy Now</button>
+            </div>
+        `;
+    }
 
-        async function loadRelatedProducts(currentId, category) {
-            try {
-                const response = await fetch('/api/products');
-                const data = await response.json();
+    // Image Switcher Logic
+    window.changeMainImage = function(src, thumb) {
+        document.getElementById('mainImg').src = src;
+        document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+        thumb.classList.add('active');
+    }
+
+    async function loadRelatedProducts(currentId, category) {
+        try {
+            const response = await fetch('/api/products');
+            const data = await response.json();
+            
+            if(data.success) {
+                // Filter: Same category, NOT the current product, limit to 4 items
+                const related = data.products
+                    .filter(p => p.category === category && p._id !== currentId)
+                    .slice(0, 4);
                 
-                if(data.success) {
-                    // Filter: Same category, NOT the current product, limit to 4 items
-                    const related = data.products
-                        .filter(p => p.category === category && p._id !== currentId)
-                        .slice(0, 4);
-                    
-                    const grid = document.getElementById('relatedGrid');
-                    
-                    if(related.length === 0) {
-                        grid.innerHTML = '<p style="color:#999; grid-column:1/-1; text-align:center;">No related products found.</p>';
-                        return;
-                    }
-
-                    related.forEach(p => {
-                        const card = document.createElement('div');
-                        card.className = 'product-card'; // Reusing your home page card style
-                        // Simple card html for related items
-                        card.innerHTML = `
-                            <div style="height:180px; background:#f9f9f9; display:flex; align-items:center; justify-content:center; overflow:hidden;">
-                                <img src="/uploads/${p.images[0]}" style="height:100%; width:auto;">
-                            </div>
-                            <div style="padding:15px;">
-                                <h3 style="font-size:0.9rem; margin-bottom:5px;">${p.title}</h3>
-                                <div style="color:#3498db; font-weight:bold;">₦ ${parseInt(p.price).toLocaleString()}</div>
-                            </div>
-                        `;
-                        // Make related item clickable
-                        card.style.cursor = 'pointer';
-                        card.onclick = () => window.location.href = `product_details.html?id=${p._id}`;
-                        grid.appendChild(card);
-                    });
+                const grid = document.getElementById('relatedGrid');
+                grid.innerHTML = ''; // Clear previous content
+                
+                if(related.length === 0) {
+                    grid.innerHTML = '<p style="color:#999; grid-column:1/-1; text-align:center;">No related products found.</p>';
+                    return;
                 }
-            } catch(e) { console.error(e); }
-        }
-    </script>
+
+                related.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card'; 
+                    
+                    const imgUrl = (p.images && p.images.length > 0) ? `/uploads/${p.images[0]}` : 'https://via.placeholder.com/250';
+
+                    card.innerHTML = `
+                        <div style="height:180px; background:#f9f9f9; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                            <img src="${imgUrl}" style="height:100%; width:auto; object-fit:contain;">
+                        </div>
+                        <div style="padding:15px;">
+                            <h3 style="font-size:0.9rem; margin-bottom:5px;">${p.title}</h3>
+                            <div style="color:#3498db; font-weight:bold;">₦ ${parseInt(p.price).toLocaleString()}</div>
+                        </div>
+                    `;
+                    
+                    // Make related item clickable
+                    card.style.cursor = 'pointer';
+                    card.onclick = () => window.location.href = `product_details.html?id=${p._id}`;
+                    grid.appendChild(card);
+                });
+            }
+        } catch(e) { console.error(e); }
+    }
+</script>
 </body>
 </html>

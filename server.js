@@ -104,13 +104,47 @@ app.post('/api/products', upload.array('images', 5), async (req, res) => {
     }
 });
 
-// GET: Fetch all products
+// --- PRODUCT ROUTES ---
+
+// 1. GET: Fetch ALL products (For Home Page) -> THIS WAS MISSING
 app.get('/api/products', async (req, res) => {
     try {
         const products = await Product.find().sort({ createdAt: -1 }); // Newest first
         res.json({ success: true, products });
     } catch (error) {
         res.status(500).json({ success: false });
+    }
+});
+
+// 2. GET: Fetch SINGLE product by ID (For Details Page)
+app.get('/api/products/:id', async (req, res) => {
+    try {
+        // A. Get the product
+        const product = await Product.findById(req.params.id);
+        
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        // B. Find the Seller details
+        const seller = await User.findOne({ email: product.sellerEmail });
+
+        // C. Combine data
+        const productData = product.toObject();
+
+        if (seller) {
+            productData.sellerPhone = seller.phoneNumber || "No Number";
+            productData.sellerJoined = seller._id.getTimestamp(); 
+        } else {
+            productData.sellerPhone = "Unavailable";
+            productData.sellerJoined = new Date();
+        }
+
+        res.json({ success: true, product: productData });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server error" });
     }
 });
 

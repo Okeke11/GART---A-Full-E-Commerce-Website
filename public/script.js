@@ -121,6 +121,8 @@ function renderProducts(productsToRender) {
     if(!grid) return;
     grid.innerHTML = ''; 
 
+    const currentUser = localStorage.getItem('userEmail');
+
     if (productsToRender.length === 0) {
         grid.innerHTML = '<p>No products found in this category.</p>';
         return;
@@ -129,6 +131,8 @@ function renderProducts(productsToRender) {
     productsToRender.forEach(product => {
         const card = document.createElement('div');
         card.classList.add('product-card');
+
+        const isMyProduct = currentUser && product.sellerEmail === currentUser;
 
         // 1. Card Click -> Details Page
         card.style.cursor = "pointer";
@@ -147,6 +151,11 @@ function renderProducts(productsToRender) {
         } else {
             imagesHtml = '<img src="https://via.placeholder.com/250" class="active">';
         }
+
+        // If it's my product, make button Grey (#95a5a6) and say "Your Listing"
+        // If not, make it Default Blue/Black and say "Add to Cart"
+        const btnText = isMyProduct ? 'Your Listing' : 'Add to Cart';
+        const btnStyle = isMyProduct ? 'background-color: #95a5a6; cursor: default;' : '';
 
         card.innerHTML = `
             <div class="card-image-container">
@@ -167,6 +176,10 @@ function renderProducts(productsToRender) {
         const addBtn = card.querySelector('.add-cart-btn');
         addBtn.addEventListener('click', (e) => {
             e.stopPropagation(); // Stops the click from bubbling up to the card
+            if (isMyProduct) {
+                alert("You cannot add your own product to cart.");
+                return;
+            }
             addToCart(product);
         });
 
