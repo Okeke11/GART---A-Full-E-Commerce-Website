@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Gart</title>
+    <link rel="icon" type="image/png" href="images/gart-logo.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .checkout-wrapper {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 40px;
+        }
+
+        /* LEFT: Shipping Form */
+        .shipping-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+        }
+
+        .shipping-section h2 { margin-bottom: 20px; color: #2c3e50; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        /* RIGHT: Order Summary */
+        .order-summary {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            height: fit-content;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .total-row {
+            border-top: 2px solid #ddd;
+            padding-top: 15px;
+            margin-top: 15px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            color: #2c3e50;
+        }
+
+        .pay-btn {
+            width: 100%;
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: background 0.3s;
+        }
+        .pay-btn:hover { background: #219150; }
+
+        @media (max-width: 768px) {
+            .checkout-wrapper { grid-template-columns: 1fr; }
+            .order-summary { grid-row: 1; } /* Show summary first on mobile */
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="home.html">
+                <img src="images/gart-logo.png" alt="Gart Logo" style="height: 40px; margin-left: 15px; border-radius: 50%;">
+            </a>
+            <span style="margin-left: 15px; font-weight: bold; color: #555;">Secure Checkout</span>
+        </div>
+    </nav>
+
+    <div class="checkout-wrapper">
+        
+        <div class="shipping-section">
+            <h2><i class="fa-solid fa-truck-fast"></i> Shipping Details</h2>
+            <form id="checkoutForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" id="phone" required placeholder="e.g. 08012345678">
+                </div>
+                <div class="form-group">
+                    <label>Delivery Address</label>
+                    <input type="text" id="address" required placeholder="Street address, Apartment, etc.">
+                </div>
+                <div class="form-group">
+                    <label>State / City</label>
+                    <input type="text" id="city" required>
+                </div>
+            </form>
+        </div>
+
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            <div id="cartItemsList">
+                </div>
+            
+            <div class="summary-item" style="margin-top: 20px;">
+                <span>Subtotal</span>
+                <span id="subtotalPrice">₦ 0</span>
+            </div>
+            <div class="summary-item">
+                <span>Delivery Fee</span>
+                <span>₦ 1,500</span>
+            </div>
+            <div class="total-row">
+                <span>Total</span>
+                <span id="finalTotal">₦ 0</span>
+            </div>
+
+            <button class="pay-btn" id="placeOrderBtn">Confirm & Pay</button>
+            <p style="text-align: center; margin-top: 15px; font-size: 0.8rem; color: #777;">
+                <i class="fa-solid fa-lock"></i> Payments are secure and encrypted.
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        const cart = JSON.parse(localStorage.getItem('gart_cart')) || [];
+        const userEmail = localStorage.getItem('userEmail');
+
+        // 1. Load Cart Logic
+        function loadCheckout() {
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+                window.location.href = "home.html";
+                return;
+            }
+
+            const list = document.getElementById('cartItemsList');
+            let subtotal = 0;
+
+            list.innerHTML = '';
+            cart.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'summary-item';
+                itemDiv.innerHTML = `
+                    <span>${item.title} <span style="font-size:0.8rem; color:#999;">x1</span></span>
+                    <span>₦ ${parseInt(item.price).toLocaleString()}</span>
+                `;
+                list.appendChild(itemDiv);
+                subtotal += parseInt(item.price);
+            });
+
+            document.getElementById('subtotalPrice').innerText = "₦ " + subtotal.toLocaleString();
+            document.getElementById('finalTotal').innerText = "₦ " + (subtotal + 1500).toLocaleString();
+        }
+
+        // 2. Pre-fill User Info (Address/Phone)
+        async function prefillData() {
+            if (!userEmail) return;
+            try {
+                const response = await fetch(`/get-profile?email=${userEmail}`);
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('fullName').value = data.username || '';
+                    document.getElementById('phone').value = data.phoneNumber || '';
+                    document.getElementById('address').value = data.address || '';
+                    if (data.state) document.getElementById('city').value = data.state;
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        // 3. Handle Payment (Simulated)
+        document.getElementById('placeOrderBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('placeOrderBtn');
+            const address = document.getElementById('address').value;
+            const phone = document.getElementById('phone').value;
+
+            if (!address || !phone) {
+                alert("Please fill in all shipping details.");
+                return;
+            }
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+            btn.disabled = true;
+
+            // Prepare Order Data
+            const subtotal = cart.reduce((sum, item) => sum + parseInt(item.price), 0);
+            const orderData = {
+                buyerEmail: userEmail,
+                items: cart.map(item => ({
+                    productId: item._id,
+                    title: item.title,
+                    price: item.price,
+                    image: item.images[0],
+                    sellerEmail: item.sellerEmail
+                })),
+                totalAmount: subtotal + 1500, // Including delivery
+                shippingAddress: address + ", " + document.getElementById('city').value,
+                phoneNumber: phone
+            };
+
+            try {
+                // Send to Server
+                const response = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // CLEAR CART
+                    localStorage.removeItem('gart_cart');
+                    
+                    alert("Order Placed Successfully!");
+                    window.location.href = "home.html"; // Or a success page
+                } else {
+                    alert("Order failed: " + result.message);
+                    btn.innerHTML = 'Confirm & Pay';
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Network error.");
+                btn.innerHTML = 'Confirm & Pay';
+                btn.disabled = false;
+            }
+        });
+
+        // Initialize Page
+        loadCheckout();
+        prefillData();
+    </script>
+</body>
+</html>
