@@ -160,8 +160,8 @@
         </div>
         <div class="nav-right">
             <div class="icon-container">
-                <a href="cart.html" style="color: inherit;">
-                    <i class="fa-solid fa-cart-shopping"></i>
+                <a href="notification.html" style="color: inherit;">
+                    <i class="fa-solid fa-bell"></i>
                 </a>
             </div>
             <div class="icon-container">
@@ -226,97 +226,116 @@
     <script src="script.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', loadCartPage);
+    document.addEventListener('DOMContentLoaded', loadCartPage);
 
-        function loadCartPage() {
-            // 1. Get Cart from LocalStorage
-            let cart = JSON.parse(localStorage.getItem('gart_cart')) || [];
-            
-            const container = document.getElementById('cart-items-container');
-            const countSpan = document.getElementById('item-count');
-            
-            // Update Count in Header
-            countSpan.textContent = cart.length;
+    // Helper to get the correct cart key
+    function getCartKey() {
+        const email = localStorage.getItem('userEmail');
+        return email ? `cart_${email}` : 'cart_guest';
+    }
 
-            // 2. Handle Empty Cart
-            if (cart.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-cart-msg">
-                        <i class="fa-solid fa-basket-shopping" style="font-size: 4rem; color: #eee; margin-bottom: 20px;"></i>
-                        <h2>Your cart is empty</h2>
-                        <p>Browse our categories and discover our best deals!</p>
-                        <a href="home.html" style="display:inline-block; margin-top:20px; color:#3498db; font-weight:bold;">Start Shopping</a>
-                    </div>
-                `;
-                updateSummary(0);
-                return;
-            }
-
-            // 3. Render Items
-            container.innerHTML = ''; // Clear loading/old data
-            let total = 0;
-
-            cart.forEach((product, index) => {
-                const itemDiv = document.createElement('div');
-                itemDiv.classList.add('cart-item');
-                
-                // Use first image or placeholder
-                const imgUrl = product.images.length > 0 ? `/uploads/${product.images[0]}` : 'https://via.placeholder.com/150';
-                
-                // Calculate Total
-                total += Number(product.price);
-
-                itemDiv.innerHTML = `
-                    <img src="${imgUrl}" class="item-img" alt="${product.title}">
-                    <div class="item-details">
-                        <h3>${product.title}</h3>
-                        <p style="color: #7f8c8d; font-size: 0.9rem;">Condition: ${product.condition}</p>
-                        <div class="item-price">₦ ${parseInt(product.price).toLocaleString()}</div>
-                    </div>
-                    <button class="remove-btn" onclick="removeFromCart(${index})">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                `;
-                container.appendChild(itemDiv);
-            });
-
-            // 4. Update Summary Box
-            updateSummary(total);
+    function loadCartPage() {
+        const email = localStorage.getItem('userEmail');
+        
+        // 1. Security: Redirect if not logged in
+        if (!email) {
+            window.location.href = 'login.html';
+            return;
         }
 
-        function updateSummary(total) {
-            document.getElementById('subtotal-price').textContent = "₦ " + total.toLocaleString();
-            document.getElementById('total-price').textContent = "₦ " + total.toLocaleString();
+        // 2. Get Cart using the UNIQUE USER KEY
+        const cartKey = getCartKey();
+        let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+        
+        const container = document.getElementById('cart-items-container');
+        const countSpan = document.getElementById('item-count');
+        
+        // Update Count in Header
+        countSpan.textContent = cart.length;
+
+        // 3. Handle Empty Cart
+        if (cart.length === 0) {
+            container.innerHTML = `
+                <div class="empty-cart-msg">
+                    <i class="fa-solid fa-basket-shopping" style="font-size: 4rem; color: #eee; margin-bottom: 20px;"></i>
+                    <h2>Your cart is empty</h2>
+                    <p>Browse our categories and discover our best deals!</p>
+                    <a href="home.html" style="display:inline-block; margin-top:20px; color:#3498db; font-weight:bold;">Start Shopping</a>
+                </div>
+            `;
+            updateSummary(0);
+            return;
         }
 
-        function removeFromCart(index) {
-            let cart = JSON.parse(localStorage.getItem('gart_cart')) || [];
-            
-            // Remove item at specific index
-            cart.splice(index, 1);
-            
-            // Save back to storage
-            localStorage.setItem('gart_cart', JSON.stringify(cart));
-            
-            // Refresh Page Content
-            loadCartPage();
-            
-            // Update Navbar Badge (Function from script.js)
-            if(typeof updateCartBadge === 'function') {
-                updateCartBadge();
-            }
-        }
+        // 4. Render Items
+        container.innerHTML = ''; // Clear loading/old data
+        let total = 0;
 
-        function checkout() {
-            let cart = JSON.parse(localStorage.getItem('gart_cart')) || [];
-            if(cart.length === 0) {
-                alert("Your cart is empty!");
-                return;
-            }
-            // For now, simple alert
-            alert("Proceeding to secure checkout gateway...");
-            // Future: window.location.href = 'checkout.html';
+        cart.forEach((product, index) => {
+            const itemDiv = document.createElement('div');
+            itemDiv.classList.add('cart-item');
+            
+            // Use first image or placeholder
+            const imgUrl = (product.images && product.images.length > 0) ? `/uploads/${product.images[0]}` : 'https://via.placeholder.com/150';
+            
+            // Calculate Total
+            total += Number(product.price);
+
+            itemDiv.innerHTML = `
+                <img src="${imgUrl}" class="item-img" alt="${product.title}">
+                <div class="item-details">
+                    <h3>${product.title}</h3>
+                    <p style="color: #7f8c8d; font-size: 0.9rem;">Condition: ${product.condition || 'Used'}</p>
+                    <div class="item-price">₦ ${parseInt(product.price).toLocaleString()}</div>
+                </div>
+                <button class="remove-btn" onclick="removeFromCart(${index})">
+                    <i class="fa-solid fa-trash"></i> Remove
+                </button>
+            `;
+            container.appendChild(itemDiv);
+        });
+
+        // 5. Update Summary Box
+        updateSummary(total);
+    }
+
+    function updateSummary(total) {
+        document.getElementById('subtotal-price').textContent = "₦ " + total.toLocaleString();
+        document.getElementById('total-price').textContent = "₦ " + total.toLocaleString();
+    }
+
+    function removeFromCart(index) {
+        // 1. Get the correct key
+        const cartKey = getCartKey();
+        let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+        
+        // 2. Remove item at specific index
+        cart.splice(index, 1);
+        
+        // 3. Save back to the UNIQUE storage
+        localStorage.setItem(cartKey, JSON.stringify(cart));
+        
+        // 4. Refresh Page Content
+        loadCartPage();
+        
+        // 5. Update Navbar Badge (Function from script.js)
+        if(typeof updateCartBadge === 'function') {
+            updateCartBadge();
         }
-    </script>
+    }
+
+    function checkout() {
+        const cartKey = getCartKey();
+        let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+        
+        if(cart.length === 0) {
+            alert("Your cart is empty!");
+            return;
+        }
+        
+        // Proceed to checkout page (create this later)
+        window.location.href = 'checkout.html';
+    }
+</script>
 </body>
 </html>

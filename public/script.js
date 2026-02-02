@@ -168,7 +168,7 @@ function renderProducts(productsToRender) {
             <div class="card-info">
                 <h3>${product.title}</h3>
                 <div class="card-price">₦ ${parseInt(product.price).toLocaleString()}</div>
-                <button class="add-cart-btn">Add to Cart</button>
+                <button class="add-cart-btn" style="${btnStyle}">${btnText}</button>
             </div>
         `;
 
@@ -226,34 +226,41 @@ function filterProducts(category) {
     }
 }
 
-// --- SHOPPING CART LOGIC ---
+// --- SHOPPING CART LOGIC (UPDATED FOR MULTI-USER) ---
+
+function getCartKey() {
+    const email = localStorage.getItem('userEmail');
+    // If no user is logged in, use a generic 'guest' cart
+    return email ? `cart_${email}` : 'cart_guest';
+}
 
 function updateCartBadge() {
-    const cart = JSON.parse(localStorage.getItem('gart_cart')) || [];
+    
+    // 1. DYNAMIC KEY: Use the email to find the specific cart
+    const cartKey = getCartKey();
+    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
     
     // Find the cart icon container
     const cartIcon = document.querySelector('.fa-cart-shopping');
-    if(!cartIcon) return; // Guard clause if icon is missing
+    if(!cartIcon) return; 
 
     const badgeContainer = cartIcon.parentElement;
     
-    // Check if we already created a badge element
     let badgeSpan = badgeContainer.querySelector('.cart-count');
     
     if (!badgeSpan) {
         badgeSpan = document.createElement('span');
         badgeSpan.className = 'cart-count';
-        // Add styling dynamically
         badgeSpan.style.position = 'absolute';
         badgeSpan.style.top = '-8px';
         badgeSpan.style.right = '-8px';
-        badgeSpan.style.background = '#e74c3c'; // Red
+        badgeSpan.style.background = '#e74c3c'; 
         badgeSpan.style.color = 'white';
         badgeSpan.style.borderRadius = '50%';
         badgeSpan.style.padding = '2px 6px';
         badgeSpan.style.fontSize = '0.7rem';
         badgeSpan.style.fontWeight = 'bold';
-        badgeContainer.style.position = 'relative'; // Ensure container is relative
+        badgeContainer.style.position = 'relative'; 
         badgeContainer.appendChild(badgeSpan);
     }
 
@@ -266,10 +273,18 @@ function updateCartBadge() {
 }
 
 function addToCart(product) {
-    // 1. Get existing cart
-    let cart = JSON.parse(localStorage.getItem('gart_cart')) || [];
+    const email = localStorage.getItem('userEmail');
+    if(!email) {
+        alert("Please log in to add items to your cart.");
+        window.location.href = 'login.html';
+        return;
+    }
 
-    // 2. Check if item exists (Prevent duplicates)
+    // 1. DYNAMIC KEY: Get this specific user's cart
+    const cartKey = getCartKey();
+    let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+
+    // 2. Check for duplicates
     const existingItem = cart.find(item => item._id === product._id);
     
     if (existingItem) {
@@ -280,12 +295,11 @@ function addToCart(product) {
     // 3. Add item
     cart.push(product);
 
-    // 4. Save back to storage
-    localStorage.setItem('gart_cart', JSON.stringify(cart));
+    // 4. Save back to storage using the UNIQUE key
+    localStorage.setItem(cartKey, JSON.stringify(cart));
 
     // 5. Update UI
     updateCartBadge();
     
-    // Optional: Visual feedback
     alert("Item added to cart!");
 }
