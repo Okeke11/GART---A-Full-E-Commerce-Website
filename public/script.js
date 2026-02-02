@@ -284,22 +284,26 @@ function addToCart(product) {
     const cartKey = getCartKey();
     let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
-    // 2. Check for duplicates
-    const existingItem = cart.find(item => item._id === product._id);
+    // 2. Check if item exists
+    const existingItemIndex = cart.findIndex(item => item._id === product._id);
     
-    if (existingItem) {
-        alert("Item is already in your cart!");
-        return;
+    if (existingItemIndex > -1) {
+        // Item exists? Increase quantity!
+        if(!cart[existingItemIndex].quantity) {
+            cart[existingItemIndex].quantity = 1; 
+        }
+        cart[existingItemIndex].quantity += 1;
+        alert("Item quantity updated in cart!");
+    } else {
+        // New item? Set quantity to 1 and push
+        product.quantity = 1;
+        cart.push(product);
+        alert("Item added to cart!");
     }
 
-    // 3. Add item
-    cart.push(product);
-
-    // 4. Save back to storage using the UNIQUE key
+    // 3. Save back to storage
     localStorage.setItem(cartKey, JSON.stringify(cart));
 
-    // 5. Update UI
+    // 4. Update UI
     updateCartBadge();
-    
-    alert("Item added to cart!");
 }

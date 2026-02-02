@@ -202,8 +202,7 @@
                             <option value="Abuja">Abuja</option>
                             <option value="Rivers">Rivers</option>
                             <option value="Ogun">Ogun</option>
-                            <option value="Kano">Kano</option>
-                            </select>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>City / Town</label>
@@ -263,12 +262,12 @@
             <div class="section-header" style="border:none; font-size:1.1rem; margin-bottom:10px;">Order Summary</div>
             
             <div class="summary-row">
-                <span>Items Total</span>
+                <span>Items Subtotal</span>
                 <span id="summary-subtotal">₦ 0</span>
             </div>
             <div class="summary-row">
                 <span>Delivery Fee</span>
-                <span style="color: #27ae60;">Free</span>
+                <span style="color: #2c3e50;">₦ 1,500</span>
             </div>
             <div class="summary-row total">
                 <span>Total to Pay</span>
@@ -287,7 +286,7 @@
             setupPaymentLogic();
         });
 
-        // 1. Load Total Price from Cart Logic
+        // 1. UPDATED: Load Total Price (Includes Quantity & Delivery Fee)
         function loadCheckoutTotals() {
             const email = localStorage.getItem('userEmail');
             if(!email) return window.location.href = 'login.html';
@@ -295,13 +294,20 @@
             const cartKey = `cart_${email}`;
             const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
-            let total = 0;
-            cart.forEach(item => total += Number(item.price));
+            let subtotal = 0;
+            // Loop through items and multiply Price * Quantity
+            cart.forEach(item => {
+                const qty = item.quantity || 1; // Default to 1 if missing
+                subtotal += Number(item.price) * qty;
+            });
 
-            const formatted = "₦ " + total.toLocaleString();
-            document.getElementById('summary-subtotal').innerText = formatted;
-            document.getElementById('summary-total').innerText = formatted;
-            document.getElementById('payBtn').innerText = `Pay ${formatted}`;
+            const deliveryFee = 1500; // Fixed Delivery Fee
+            const grandTotal = subtotal + deliveryFee;
+
+            // Update HTML
+            document.getElementById('summary-subtotal').innerText = "₦ " + subtotal.toLocaleString();
+            document.getElementById('summary-total').innerText = "₦ " + grandTotal.toLocaleString();
+            document.getElementById('payBtn').innerText = `Pay ₦ ${grandTotal.toLocaleString()}`;
         }
 
         // 2. Handle Payment Selection Logic
@@ -310,14 +316,12 @@
             const cardBtn = document.getElementById('opt-card');
             const cardSection = document.getElementById('card-details-section');
             const payBtn = document.getElementById('payBtn');
-            const cardInputs = cardSection.querySelectorAll('input, select');
 
             let selectedMethod = '';
 
             // A. TRANSFER CLICK
             transferBtn.addEventListener('click', () => {
                 alert("Bank Transfer is not available right now. Please use Card.");
-                // Reset UI
                 transferBtn.classList.remove('active');
                 cardBtn.classList.remove('active');
                 cardSection.style.display = 'none';
@@ -328,10 +332,8 @@
             cardBtn.addEventListener('click', () => {
                 transferBtn.classList.remove('active');
                 cardBtn.classList.add('active');
-                cardSection.style.display = 'block'; // Show inputs
+                cardSection.style.display = 'block';
                 selectedMethod = 'card';
-                
-                // Scroll slightly to show the new fields
                 cardSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             });
 
@@ -344,14 +346,12 @@
                     return;
                 }
 
-                // Simple validation for card type
                 const cardType = document.getElementById('cardType').value;
                 if(!cardType) {
                     alert("Please select your Card Type (Verve, Visa, etc).");
                     return;
                 }
 
-                // Simulate Processing
                 payBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing Payment...';
                 payBtn.disabled = true;
 
