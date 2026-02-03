@@ -338,34 +338,51 @@
             });
 
             // C. HANDLE FORM SUBMIT
-            document.getElementById('checkoutForm').addEventListener('submit', (e) => {
-                e.preventDefault();
+document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-                if (selectedMethod !== 'card') {
-                    alert("Please select a valid payment method (Card).");
-                    return;
-                }
+    // ... (keep your existing validations) ...
 
-                const cardType = document.getElementById('cardType').value;
-                if(!cardType) {
-                    alert("Please select your Card Type (Verve, Visa, etc).");
-                    return;
-                }
+    const payBtn = document.getElementById('payBtn');
+    payBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+    payBtn.disabled = true;
 
-                payBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing Payment...';
-                payBtn.disabled = true;
+    // PREPARE DATA
+    const email = localStorage.getItem('userEmail');
+    const cartKey = `cart_${email}`;
+    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
-                setTimeout(() => {
-                    alert("Payment Successful! Your order has been placed.");
-                    
-                    // Clear Cart
-                    const email = localStorage.getItem('userEmail');
-                    const cartKey = `cart_${email}`;
-                    localStorage.removeItem(cartKey);
+    // CALCULATE TOTAL
+    let totalAmount = 0;
+    cart.forEach(item => totalAmount += (item.price * (item.quantity || 1)));
+    totalAmount += 1500; // Delivery
 
-                    // Redirect Home
-                    window.location.href = 'home.html';
-                }, 2000);
+    try {
+        const response = await fetch('/api/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: email,
+                items: cart,
+                totalAmount: totalAmount
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert("Payment Successful! Check your Orders tab for the Delivery Code.");
+            localStorage.removeItem(cartKey); // Clear cart
+            window.location.href = 'orders.html'; // Go to new Orders page
+        } else {
+            alert("Checkout Failed: " + data.message);
+            payBtn.disabled = false;
+            payBtn.innerHTML = "Pay Now";
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Server Error");
+    }
             });
         }
     </script>

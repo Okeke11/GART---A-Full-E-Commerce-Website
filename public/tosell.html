@@ -14,7 +14,6 @@
         
         /* 1. Hero Banner - Now in Gart Blue */
         .sell-hero {
-            /* Gradient: Primary Blue to Dark Blue */
             background: linear-gradient(135deg, #3498db, #2980b9); 
             height: 350px;
             display: flex;
@@ -54,6 +53,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             transition: transform 0.2s, box-shadow 0.3s;
             display: inline-block;
+            margin-right: 10px; /* Space between buttons */
         }
 
         .start-selling-btn:hover {
@@ -149,6 +149,7 @@
                 padding: 60px 20px;
             }
             .hero-image { display: none; }
+            .start-selling-btn { display: block; margin: 10px auto; width: fit-content;}
         }
     </style>
 </head>
@@ -162,7 +163,7 @@
             </a>
         </div>
         <div class="nav-right">
-            <div class="icon-container"><i class="fa-solid fa-cart-shopping"></i></div>
+            <div class="icon-container"><a href="cart.html" style="color:inherit;"><i class="fa-solid fa-cart-shopping"></i></a></div>
             <div class="icon-container">
                 <a href="notification.html" style="color: inherit;">
                     <i class="fa-solid fa-bell"></i>
@@ -182,7 +183,8 @@
         <ul class="sidebar-links">
             <li><a href="home.html">Home</a></li>
             <li><a href="tosell.html" style="background-color: #34495e;">Sell</a></li>
-            <li><a href="#">Categories</a></li>
+            <li><a href="my_products.html">My Products</a></li>
+            <li><a href="orders.html">My Orders</a></li>
             <li><a href="about.html">About</a></li>
             <li style="margin-top: auto;"><a href="login.html" id="logout-btn">Logout</a></li>
         </ul>
@@ -193,7 +195,10 @@
         <div class="hero-text">
             <h1>Start Selling on Gart</h1>
             <p>Turn your items into cash securely. Reach buyers instantly.</p>
+            
             <a href="sell_phone_verify.html" class="start-selling-btn">Create Listing</a>
+            <a href="my_sales.html" class="start-selling-btn">My Sales</a>
+            <a href="bank_account.html" class="start-selling-btn" id="bank-link">Bank Accounts</a>
         </div>
         
         <i class="fa-solid fa-chart-line hero-image"></i>
@@ -204,7 +209,6 @@
         <h2>Why Choose Gart?</h2>
         
         <div class="benefits-grid">
-            
             <div class="benefit-card">
                 <i class="fa-solid fa-wallet benefit-icon"></i>
                 <h3>Zero Listing Fees</h3>
@@ -240,54 +244,52 @@
                 <h3>24/7 Seller Support</h3>
                 <p>Our dedicated team is always available to help you optimize your sales.</p>
             </div>
-
         </div>
     </div>
 
     <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-col">
-                <h4>About Gart</h4>
-                <ul>
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="careers.html">Careers</a></li>
-                    <li><a href="press.html">Press</a></li>
-                    <li><a href="blog.html">Blog</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Customer Service</h4>
-                <ul>
-                    <li><a href="contact.html">Contact Us</a></li>
-                    <li><a href="#">Track Order</a></li>
-                    <li><a href="#">Returns</a></li>
-                    <li><a href="faq.html">FAQ</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="privacy_policy.html">Privacy Policy</a></li>
-                    <li><a href="terms.html">Terms of Service</a></li>
-                    <li><a href="shipping_info.html">Shipping Info</a></li>
-                    <li><a href="payment_option.html">Payment Options</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Follow Us</h4>
-                <div class="social-links">
-                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
-                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
-                </div>
-            </div>
-        </div>
         <div class="footer-bottom">
             <p>&copy; 2026 Gart Inc. Shop Global. All rights reserved.</p>
         </div>
     </footer>
 
     <script src="script.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', checkEligibility);
+
+        async function checkEligibility() {
+            const userEmail = localStorage.getItem('userEmail');
+            const bankLink = document.getElementById('bank-link');
+            
+            if(!userEmail || !bankLink) return;
+
+            try {
+                // Check if user has uploaded any products
+                const response = await fetch(`/api/my-products?email=${userEmail}`);
+                const data = await response.json();
+
+                if (data.success && data.products.length > 0) {
+                    // HAS PRODUCTS -> Enable Button
+                    bankLink.style.pointerEvents = 'auto';
+                    bankLink.style.opacity = '1';
+                } else {
+                    // NO PRODUCTS -> Disable Button
+                    bankLink.style.opacity = '0.5';
+                    bankLink.style.cursor = 'not-allowed';
+                    bankLink.style.backgroundColor = '#ccc';
+                    bankLink.style.color = '#666';
+                    
+                    // Stop click and show alert
+                    bankLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        alert("Restricted: You must have at least one live product listing to manage Bank Details.");
+                    });
+                }
+            } catch (error) {
+                console.error("Error checking eligibility", error);
+            }
+        }
+    </script>
 </body>
 </html>

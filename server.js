@@ -1,6 +1,10 @@
-//Run on port 3000
+// Run on port 3000
 const express = require('express');
 const mongoose = require('mongoose');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
 const app = express();
 const port = 3000;
 
@@ -12,7 +16,9 @@ mongoose.connect('mongodb://localhost:27017/userDB')
     .then(() => console.log("Connected to MongoDB"))
     .catch(err => console.error("Error connecting to MongoDB", err));
 
-// --- USER SCHEMA ---
+// --- 1. SCHEMAS ---
+
+// A. USER SCHEMA (Updated with Bank Accounts Array)
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true, maxlength: 10 },
     email: { type: String, required: true, unique: true },
@@ -23,7 +29,16 @@ const userSchema = new mongoose.Schema({
     state: String,
     address: String,
     profilePic: String,
-    phoneNumber: String, // Already here, which is good
+    phoneNumber: String,
+    
+    // CHANGED: Store array of accounts
+    bankAccounts: [{
+        bankName: String,
+        accountName: String,
+        accountNumber: String
+    }],
+    
+    walletBalance: { type: Number, default: 0 },
     // Notification Fields
     notifications: [{
         title: String,
@@ -33,124 +48,55 @@ const userSchema = new mongoose.Schema({
     }],
     lastPromoTime: { type: Number, default: 0 }
 });
-
 const User = mongoose.model('User', userSchema);
 
-
-// --- 1. SETUP MULTER (For Image Uploads) ---
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs'); // Added fs to ensure folder exists
-
-// Ensure upload directory exists
-const uploadDir = path.join(__dirname, 'public/uploads');
-if (!fs.existsSync(uploadDir)){
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// Configure where to save images
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'public/uploads/') // Save to 'public/uploads' folder
-    },
-    filename: (req, file, cb) => {
-        // Rename file to avoid duplicates (e.g., 1745382-myimage.png)
-        // Clean the filename to prevent errors with spaces
-        const uniqueName = Date.now() + '-' + file.originalname.replace(/\s+/g, '-');
-        cb(null, uniqueName);
-    }
-});
-const upload = multer({ storage: storage });
-
-// --- 2. PRODUCT SCHEMA ---
+// B. PRODUCT SCHEMA
 const productSchema = new mongoose.Schema({
     title: String,
     price: Number,
     condition: String,
     category: String,
     description: String,
-    images: [String], // We will store an array of image filenames
-    sellerEmail: String, // To know who sold it
+    images: [String],
+    sellerEmail: String,
     createdAt: { type: Date, default: Date.now }
 });
-
 const Product = mongoose.model('Product', productSchema);
+
+// C. ORDER SCHEMA
+const orderSchema = new mongoose.Schema({
+    buyerEmail: String,
+    items: Array, 
+    totalAmount: Number,
+    deliveryCode: String, // Secret OTP
+    status: { type: String, default: 'Pending' }, 
+    createdAt: { type: Date, default: Date.now }
+});
+const Order = mongoose.model('Order', orderSchema);
+
+
+// --- 2. MULTER SETUP ---
+const uploadDir = path.join(__dirname, 'public/uploads');
+if (!fs.existsSync(uploadDir)){
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/uploads/') 
+    },
+    filename: (req, file, cb) => {
+        const uniqueName = Date.now() + '-' + file.originalname.replace(/\s+/g, '-');
+        cb(null, uniqueName);
+    }
+});
+const upload = multer({ storage: storage });
+
 
 // --- 3. ROUTES ---
 
-// POST: Save a new product (Supports up to 5 images)
-app.post('/api/products', upload.array('images', 5), async (req, res) => {
-    try {
-        const { title, price, condition, category, description, sellerEmail } = req.body;
-        
-        // Get filenames from the uploaded files (Safe check if files exist)
-        const imageFilenames = req.files ? req.files.map(file => file.filename) : [];
+// --- AUTH & USER ROUTES ---
 
-        const newProduct = new Product({
-            title,
-            price,
-            condition,
-            category,
-            description,
-            sellerEmail,
-            images: imageFilenames
-        });
-
-        await newProduct.save();
-        res.json({ success: true, message: "Product listed successfully!" });
-    } catch (error) {
-        console.error("Server Error:", error);
-        res.status(500).json({ success: false, message: "Error saving product" });
-    }
-});
-
-// --- PRODUCT ROUTES ---
-
-// 1. GET: Fetch ALL products (For Home Page) -> THIS WAS MISSING
-app.get('/api/products', async (req, res) => {
-    try {
-        const products = await Product.find().sort({ createdAt: -1 }); // Newest first
-        res.json({ success: true, products });
-    } catch (error) {
-        res.status(500).json({ success: false });
-    }
-});
-
-// 2. GET: Fetch SINGLE product by ID (For Details Page)
-app.get('/api/products/:id', async (req, res) => {
-    try {
-        // A. Get the product
-        const product = await Product.findById(req.params.id);
-        
-        if (!product) {
-            return res.status(404).json({ success: false, message: "Product not found" });
-        }
-
-        // B. Find the Seller details
-        const seller = await User.findOne({ email: product.sellerEmail });
-
-        // C. Combine data
-        const productData = product.toObject();
-
-        if (seller) {
-            productData.sellerPhone = seller.phoneNumber || "No Number";
-            productData.sellerJoined = seller._id.getTimestamp(); 
-        } else {
-            productData.sellerPhone = "Unavailable";
-            productData.sellerJoined = new Date();
-        }
-
-        res.json({ success: true, product: productData });
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: "Server error" });
-    }
-});
-
-// --- USER ROUTES ---
-
-// 1. SIGNUP
 app.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
     if (username.length > 10) return res.json({ success: false, message: "Username too long" });
@@ -159,7 +105,6 @@ app.post('/signup', async (req, res) => {
         const existingUser = await User.findOne({ email });
         if (existingUser) return res.json({ success: false, message: "Email already exists" });
 
-        // Welcome Message
         const welcomeMsg = {
             title: `Welcome ${username}`,
             body: 'Do have a great experience at Gart.',
@@ -180,7 +125,6 @@ app.post('/signup', async (req, res) => {
     }
 });
 
-// 2. LOGIN
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -195,14 +139,12 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// 3. GET NOTIFICATIONS
 app.get('/notifications', async (req, res) => {
     const email = req.query.email;
     try {
         const user = await User.findOne({ email });
         if (!user) return res.json({ success: false });
 
-        // Promo Check (24 hours)
         const now = Date.now();
         const twentyFourHours = 24 * 60 * 60 * 1000;
 
@@ -224,21 +166,17 @@ app.get('/notifications', async (req, res) => {
     }
 });
 
-// 4. CLEAR NOTIFICATIONS
 app.post('/clear-notifications', async (req, res) => {
     const { email } = req.body;
     try {
-        await User.updateOne(
-            { email: email },
-            { $set: { "notifications.$[].seen": true } }
-        );
+        await User.updateOne({ email: email }, { $set: { "notifications.$[].seen": true } });
         res.json({ success: true });
     } catch (error) {
         res.status(500).json({ success: false });
     }
 });
 
-// 5. GET PROFILE (UPDATED FOR PHONE NUMBER)
+// GET PROFILE (UPDATED TO RETURN BANK ARRAY)
 app.get('/get-profile', async (req, res) => {
     const email = req.query.email;
     try {
@@ -252,8 +190,11 @@ app.get('/get-profile', async (req, res) => {
                 country: user.country || "",
                 state: user.state || "",
                 address: user.address || "",
-                phoneNumber: user.phoneNumber || "", // <--- ADDED THIS
-                profilePic: user.profilePic || ""
+                phoneNumber: user.phoneNumber || "",
+                profilePic: user.profilePic || "",
+                // Send bank array
+                bankAccounts: user.bankAccounts || [],
+                walletBalance: user.walletBalance || 0
             });
         } else {
             res.json({ success: false, message: "User not found" });
@@ -263,128 +204,258 @@ app.get('/get-profile', async (req, res) => {
     }
 });
 
-// 6. UPDATE PROFILE (UPDATED FOR PHONE NUMBER)
 app.post('/update-profile', async (req, res) => {
-    // Added phoneNumber to the variables we extract from req.body
     const { email, dob, country, state, address, profilePic, phoneNumber } = req.body;
     try {
         await User.updateOne({ email: email }, { 
-            $set: { 
-                dob, 
-                country, 
-                state, 
-                address, 
-                profilePic,
-                phoneNumber // <--- ADDED THIS
-            } 
+            $set: { dob, country, state, address, profilePic, phoneNumber } 
         });
         res.json({ success: true });
     } catch (error) {
         res.status(500).json({ success: false, message: "Update failed" });
     }
 });
-// --- OTP VERIFICATION ROUTES ---
 
-// In-Memory Storage for OTPs
-const otpStore = {}; 
-
-// 1. SEND OTP (SMART CHECK)
-app.post('/send-otp', async (req, res) => {
-    const { phone, email } = req.body; 
+// --- NEW ROUTE: UPDATE BANK ACCOUNTS ---
+app.post('/api/update-bank', async (req, res) => {
+    const { email, bankAccounts } = req.body;
+    
+    // Security check: Max 2
+    if (bankAccounts.length > 2) {
+        return res.json({ success: false, message: "You can only store up to 2 accounts." });
+    }
 
     try {
-        // A. Find the user
-        const user = await User.findOne({ email });
-        
-        if (!user) {
-            return res.json({ success: false, message: "User not found." });
-        }
-
-        // B. Check if Profile has a number
-        if (!user.phoneNumber) {
-            return res.json({ 
-                success: false, 
-                errorType: 'missing_profile', 
-                message: "No phone number found in profile." 
-            });
-        }
-
-        // C. Clean numbers for comparison (Remove spaces, dashes, take last 10 digits)
-        const cleanInput = phone.replace(/\D/g, '').slice(-10);
-        const cleanStored = user.phoneNumber.replace(/\D/g, '').slice(-10);
-
-        // D. Compare
-        if (cleanInput !== cleanStored) {
-            return res.json({ 
-                success: false, 
-                message: "This number does not match the one in your Profile." 
-            });
-        }
-
-        // E. If Match, Proceed to Send OTP
-        const code = Math.floor(1000 + Math.random() * 9000).toString();
-        
-        // LOG CODE TO TERMINAL (Simulating SMS)
-        console.log("--------------------------------------");
-        console.log(`[SMS SERVICE] Sending OTP to ${phone}: ${code}`);
-        console.log("--------------------------------------");
-        
-        otpStore[phone] = code;
-
-        res.json({ success: true, message: "Code sent!" });
-
+        await User.updateOne({ email: email }, { 
+            $set: { bankAccounts: bankAccounts } 
+        });
+        res.json({ success: true, message: "Bank details updated!" });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: "Server error." });
+        res.status(500).json({ success: false, message: "Server error" });
     }
 });
 
-// 2. VERIFY OTP
-app.post('/verify-otp', (req, res) => {
-    const { phone, code } = req.body;
 
-    // Check if the phone exists and code matches
-    if (otpStore[phone] && otpStore[phone] === code) {
-        delete otpStore[phone]; // Clear code so it can't be reused
-        res.json({ success: true });
-    } else {
-        res.json({ success: false, message: "Invalid Code" });
+// --- PRODUCT ROUTES ---
+
+// Upload Product
+app.post('/api/products', upload.array('images', 5), async (req, res) => {
+    try {
+        const { title, price, condition, category, description, sellerEmail } = req.body;
+        const imageFilenames = req.files ? req.files.map(file => file.filename) : [];
+
+        const newProduct = new Product({
+            title, price, condition, category, description, sellerEmail, images: imageFilenames
+        });
+
+        await newProduct.save();
+        res.json({ success: true, message: "Product listed successfully!" });
+    } catch (error) {
+        console.error("Server Error:", error);
+        res.status(500).json({ success: false, message: "Error saving product" });
     }
 });
 
-// GET: Fetch a SINGLE product by ID
+// Fetch ALL Products
+app.get('/api/products', async (req, res) => {
+    try {
+        const products = await Product.find().sort({ createdAt: -1 });
+        res.json({ success: true, products });
+    } catch (error) {
+        res.status(500).json({ success: false });
+    }
+});
+
+// Fetch SINGLE Product + Seller Info
 app.get('/api/products/:id', async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
-        if (product) {
-            res.json({ success: true, product });
+        if (!product) return res.status(404).json({ success: false, message: "Product not found" });
+
+        const seller = await User.findOne({ email: product.sellerEmail });
+        const productData = product.toObject();
+
+        if (seller) {
+            productData.sellerPhone = seller.phoneNumber || "No Number";
+            productData.sellerJoined = seller._id.getTimestamp(); 
         } else {
-            res.status(404).json({ success: false, message: "Product not found" });
+            productData.sellerPhone = "Unavailable";
+            productData.sellerJoined = new Date();
         }
+
+        res.json({ success: true, product: productData });
     } catch (error) {
         res.status(500).json({ success: false, message: "Server error" });
     }
 });
 
-// GET: Fetch products for a specific seller
+// Fetch My Products
 app.get('/api/my-products', async (req, res) => {
     try {
         const { email } = req.query;
-        // Find products where sellerEmail matches the request
         const products = await Product.find({ sellerEmail: email }).sort({ createdAt: -1 });
         res.json({ success: true, products });
     } catch (error) {
-        res.status(500).json({ success: false, message: "Server error" });
+        res.status(500).json({ success: false });
     }
 });
 
-// DELETE: Allow user to delete their own product
+// Delete Product
 app.delete('/api/products/:id', async (req, res) => {
     try {
         await Product.findByIdAndDelete(req.params.id);
         res.json({ success: true, message: "Product deleted" });
     } catch (error) {
-        res.status(500).json({ success: false, message: "Error deleting product" });
+        res.status(500).json({ success: false });
+    }
+});
+
+
+// --- ORDER & ESCROW ROUTES ---
+
+// 1. CHECKOUT (Create Order & Notify)
+app.post('/api/checkout', async (req, res) => {
+    const { email, items, totalAmount } = req.body;
+
+    try {
+        const secretCode = Math.floor(1000 + Math.random() * 9000).toString();
+
+        const newOrder = new Order({
+            buyerEmail: email,
+            items: items,
+            totalAmount: totalAmount,
+            deliveryCode: secretCode
+        });
+        await newOrder.save();
+
+        const buyer = await User.findOne({ email });
+        if(buyer) {
+            buyer.notifications.push({
+                title: 'Order Placed Successfully',
+                body: `You bought ${items.length} items. Your Delivery Code is: ${secretCode}. Give this to the seller ONLY when you receive the item.`,
+                time: new Date().toLocaleString()
+            });
+            await buyer.save();
+        }
+
+        for (const item of items) {
+            const seller = await User.findOne({ email: item.sellerEmail });
+            if (seller) {
+                seller.notifications.push({
+                    title: 'New Sale! 💰',
+                    body: `Someone bought your ${item.title}. Get it ready! Ask the buyer for the Delivery Code to get paid.`,
+                    time: new Date().toLocaleString()
+                });
+                await seller.save();
+            }
+        }
+
+        res.json({ success: true, message: "Order placed!", orderId: newOrder._id });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Checkout failed" });
+    }
+});
+
+// 2. FETCH SELLER'S SALES
+app.get('/api/my-sales', async (req, res) => {
+    const { email } = req.query;
+    try {
+        const orders = await Order.find({ "items.sellerEmail": email }).sort({ createdAt: -1 });
+        res.json({ success: true, orders });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false });
+    }
+});
+
+// 3. FETCH BUYER'S ORDERS
+app.get('/api/my-orders', async (req, res) => {
+    const { email } = req.query;
+    try {
+        const orders = await Order.find({ buyerEmail: email }).sort({ createdAt: -1 });
+        res.json({ success: true, orders });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false });
+    }
+});
+
+// 4. VERIFY DELIVERY & RELEASE FUNDS
+app.post('/api/verify-delivery', async (req, res) => {
+    const { sellerEmail, orderId, inputCode } = req.body;
+
+    try {
+        const order = await Order.findById(orderId);
+        if (!order) return res.json({ success: false, message: "Order not found" });
+
+        if (order.deliveryCode !== inputCode) {
+            return res.json({ success: false, message: "Incorrect Code! Do not release the item." });
+        }
+
+        if (order.status === 'Completed') {
+            return res.json({ success: false, message: "Order already completed." });
+        }
+
+        order.status = 'Completed';
+        await order.save();
+
+        let sellerEarnings = 0;
+        order.items.forEach(item => {
+            if(item.sellerEmail === sellerEmail) {
+                sellerEarnings += (item.price * (item.quantity || 1));
+            }
+        });
+
+        const commission = sellerEarnings * 0.05; 
+        const payout = sellerEarnings - commission;
+
+        await User.updateOne(
+            { email: sellerEmail },
+            { $inc: { walletBalance: payout } } 
+        );
+
+        res.json({ success: true, message: `Code Confirmed! ₦${payout.toLocaleString()} added to your wallet.` });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Verification failed" });
+    }
+});
+
+
+// --- OTP ROUTES ---
+const otpStore = {}; 
+
+app.post('/send-otp', async (req, res) => {
+    const { phone, email } = req.body; 
+    try {
+        const user = await User.findOne({ email });
+        if (!user) return res.json({ success: false, message: "User not found." });
+        if (!user.phoneNumber) return res.json({ success: false, errorType: 'missing_profile', message: "No phone number found." });
+
+        const cleanInput = phone.replace(/\D/g, '').slice(-10);
+        const cleanStored = user.phoneNumber.replace(/\D/g, '').slice(-10);
+
+        if (cleanInput !== cleanStored) return res.json({ success: false, message: "Number mismatch." });
+
+        const code = Math.floor(1000 + Math.random() * 9000).toString();
+        console.log(`[SMS] OTP for ${phone}: ${code}`);
+        otpStore[phone] = code;
+
+        res.json({ success: true, message: "Code sent!" });
+    } catch (error) {
+        res.status(500).json({ success: false });
+    }
+});
+
+app.post('/verify-otp', (req, res) => {
+    const { phone, code } = req.body;
+    if (otpStore[phone] && otpStore[phone] === code) {
+        delete otpStore[phone]; 
+        res.json({ success: true });
+    } else {
+        res.json({ success: false, message: "Invalid Code" });
     }
 });
 

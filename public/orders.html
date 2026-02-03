@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Gart</title>
+    <link rel="icon" type="image/png" href="images/gart-logo.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .orders-container { max-width: 800px; margin: 40px auto; padding: 20px; }
+        
+        .order-card {
+            background: white; border: 1px solid #ddd; border-radius: 10px;
+            padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .order-header {
+            display: flex; justify-content: space-between; border-bottom: 1px solid #eee;
+            padding-bottom: 15px; margin-bottom: 15px; font-weight: bold; color: #555;
+            font-size: 0.9rem;
+        }
+
+        .item-list { margin-bottom: 15px; }
+        .item-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 1rem; color: #333; }
+        
+        /* THE SECRET CODE BOX */
+        .delivery-code-box {
+            background: #eaf6fc; color: #2980b9; padding: 15px; text-align: center;
+            border-radius: 8px; margin-top: 20px; border: 2px dashed #3498db;
+        }
+
+        .code-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .the-code { font-size: 2rem; font-weight: 800; letter-spacing: 8px; font-family: monospace; }
+        
+        .warning-text { 
+            font-size: 0.8rem; color: #e74c3c; text-align: center; margin-top: 8px; 
+            background: #fff0f0; padding: 5px; border-radius: 4px;
+        }
+
+        .status-completed {
+            background: #27ae60; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;
+        }
+        .status-pending {
+            background: #f39c12; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="home.html"><img src="images/gart-logo.png" style="height:40px; margin-left:15px; border-radius:50%;"></a>
+            <h2 style="margin-left: 20px; color: #555;">My Orders</h2>
+        </div>
+        <div class="nav-right">
+            <a href="home.html" style="text-decoration: none; color: #555;">
+                <i class="fa-solid fa-arrow-left"></i> Continue Shopping
+            </a>
+        </div>
+    </nav>
+
+    <div class="orders-container" id="ordersList">
+        <div style="text-align: center; padding: 50px;">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #ddd;"></i>
+            <p style="color: #999; margin-top: 10px;">Loading your orders...</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', loadMyOrders);
+
+        async function loadMyOrders() {
+            const email = localStorage.getItem('userEmail');
+            if(!email) return window.location.href = 'login.html';
+
+            const container = document.getElementById('ordersList');
+
+            try {
+                // 1. Fetch Orders from our new Server Route
+                const response = await fetch(`/api/my-orders?email=${email}`);
+                const data = await response.json();
+
+                container.innerHTML = '';
+
+                if (!data.success || data.orders.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align:center; padding:50px; color:#999;">
+                            <i class="fa-solid fa-box-open" style="font-size:3rem; margin-bottom:20px;"></i>
+                            <p>You haven't placed any orders yet.</p>
+                        </div>`;
+                    return;
+                }
+
+                // 2. Render each order
+                data.orders.forEach(order => {
+                    const date = new Date(order.createdAt).toLocaleDateString();
+                    const statusBadge = order.status === 'Completed' 
+                        ? '<span class="status-completed">Delivered</span>' 
+                        : '<span class="status-pending">In Progress</span>';
+
+                    // Generate list of items
+                    let itemsHtml = '';
+                    order.items.forEach(item => {
+                        itemsHtml += `
+                            <div class="item-row">
+                                <span>${item.title} (x${item.quantity || 1})</span>
+                                <span>₦ ${(item.price * (item.quantity||1)).toLocaleString()}</span>
+                            </div>
+                        `;
+                    });
+
+                    // 3. Logic: Only show code if NOT completed
+                    let codeHtml = '';
+                    if (order.status !== 'Completed') {
+                        codeHtml = `
+                            <div class="delivery-code-box">
+                                <div class="code-title">Delivery Code</div>
+                                <div class="the-code">${order.deliveryCode}</div>
+                                <div class="warning-text">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> 
+                                    Give this code to the rider/seller ONLY after you have received and checked your item.
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        codeHtml = `
+                            <div style="text-align:center; margin-top:20px; color:#27ae60; font-weight:bold;">
+                                <i class="fa-solid fa-check-circle"></i> Order Completed
+                            </div>
+                        `;
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'order-card';
+                    card.innerHTML = `
+                        <div class="order-header">
+                            <span>Order #${order._id.slice(-6).toUpperCase()}</span>
+                            <span>${date}</span>
+                            ${statusBadge}
+                        </div>
+                        
+                        <div class="item-list">
+                            ${itemsHtml}
+                        </div>
+                        
+                        <div style="border-top:1px solid #eee; padding-top:10px; display:flex; justify-content:space-between; font-weight:bold; color:#2c3e50;">
+                            <span>Total Amount</span>
+                            <span>₦ ${order.totalAmount.toLocaleString()}</span>
+                        </div>
+
+                        ${codeHtml}
+                    `;
+                    container.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = '<p style="text-align:center; color:red;">Failed to load orders. Check server connection.</p>';
+            }
+        }
+    </script>
+</body>
+</html>
