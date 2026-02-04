@@ -381,25 +381,28 @@ app.get('/api/my-orders', async (req, res) => {
     }
 });
 
-// 4. VERIFY DELIVERY & RELEASE FUNDS
+// 4. VERIFY DELIVERY & AUTO-PAYOUT
 app.post('/api/verify-delivery', async (req, res) => {
     const { sellerEmail, orderId, inputCode } = req.body;
 
     try {
+        // 1. Find Order
         const order = await Order.findById(orderId);
         if (!order) return res.json({ success: false, message: "Order not found" });
 
+        // 2. Validate Code & Status
         if (order.deliveryCode !== inputCode) {
             return res.json({ success: false, message: "Incorrect Code! Do not release the item." });
         }
-
         if (order.status === 'Completed') {
             return res.json({ success: false, message: "Order already completed." });
         }
 
+        // 3. Mark Order as Completed
         order.status = 'Completed';
         await order.save();
 
+        // 4. Calculate Seller's Share
         let sellerEarnings = 0;
         order.items.forEach(item => {
             if(item.sellerEmail === sellerEmail) {
@@ -407,15 +410,45 @@ app.post('/api/verify-delivery', async (req, res) => {
             }
         });
 
-        const commission = sellerEarnings * 0.05; 
+        const commission = sellerEarnings * 0.05; // 5% fee for Gart
         const payout = sellerEarnings - commission;
 
-        await User.updateOne(
-            { email: sellerEmail },
-            { $inc: { walletBalance: payout } } 
-        );
+        // 5. AUTO-PAYOUT LOGIC
+        const seller = await User.findOne({ email: sellerEmail });
+        
+        if (seller.bankAccounts && seller.bankAccounts.length > 0) {
+            
+            const bank = seller.bankAccounts[0]; // Use the first/primary account
+            
+            seller.notifications.push({
+                title: 'Payout Initiated 🏦',
+                body: `Delivery verified! ₦${payout.toLocaleString()} has been automatically sent to your ${bank.bankName} (${bank.accountNumber}).`,
+                time: new Date().toLocaleString()
+            });
+            
 
-        res.json({ success: true, message: `Code Confirmed! ₦${payout.toLocaleString()} added to your wallet.` });
+            res.json({ 
+                success: true, 
+                message: `Success! ₦${payout.toLocaleString()} sent to ${bank.bankName}.` 
+            });
+
+        } else {
+            // SCENARIO B: No bank account -> Hold in Wallet (Safety Net)
+            seller.walletBalance += payout;
+            
+            seller.notifications.push({
+                title: 'Payout Held ⚠️',
+                body: `Delivery verified! ₦${payout.toLocaleString()} is held in your wallet because no bank account was found. Please add one!`,
+                time: new Date().toLocaleString()
+            });
+
+            res.json({ 
+                success: true, 
+                message: `Code confirmed! Funds added to internal wallet (No Bank Account Linked).` 
+            });
+        }
+
+        await seller.save();
 
     } catch (error) {
         console.error(error);
