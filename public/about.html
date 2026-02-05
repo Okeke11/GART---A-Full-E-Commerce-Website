@@ -3,231 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - Gart</title>
+    <title>About Gart - Empowering Global Commerce</title>
     
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="about.css">
+    
     <link rel="icon" type="image/png" href="images/gart-logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* about.css */
-
-/* Reuse global styles from style.css (imported in HTML) */
-
-.about-wrapper {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 40px 20px;
-}
-
-/* 1. Hero Section */
-.about-hero {
-    text-align: center;
-    margin-bottom: 60px;
-}
-
-.about-hero h1 {
-    font-size: 2.5rem;
-    color: #2c3e50;
-    margin-bottom: 15px;
-}
-
-.about-hero p {
-    font-size: 1.1rem;
-    color: #7f8c8d;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-/* 2. Founder Section (The "Inspiration") */
-.founder-section {
-    display: flex;
-    align-items: center;
-    gap: 40px;
-    background-color: white;
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    margin-bottom: 60px;
-}
-
-.founder-img-box {
-    flex-shrink: 0;
-    width: 250px;
-    height: 250px;
-    border-radius: 20px; /* Soft square looks professional here */
-    overflow: hidden;
-    border: 5px solid #ecf0f1;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-}
-
-.founder-img-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.founder-text h2 {
-    font-size: 1.8rem;
-    color: #2c3e50;
-    margin-bottom: 15px;
-}
-
-.founder-name {
-    color: #3498db;
-    font-weight: 800;
-}
-
-.founder-text p {
-    color: #555;
-    line-height: 1.6;
-    margin-bottom: 15px;
-}
-
-/* 3. "Why Gart?" Cards */
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
-    margin-top: 40px;
-}
-
-.feature-card {
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    text-align: center;
-    transition: transform 0.3s;
-    border: 1px solid #eee;
-}
-
-.feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-    border-color: #3498db;
-}
-
-.feature-icon {
-    font-size: 2.5rem;
-    color: #3498db;
-    margin-bottom: 20px;
-}
-
-.feature-card h3 {
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.feature-card p {
-    font-size: 0.9rem;
-    color: #777;
-    line-height: 1.5;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .founder-section {
-        flex-direction: column;
-        text-align: center;
-    }
-}
-.footer {
-    background-color: #f8f9fa;
-    padding: 30px 0 15px;
-    margin-top: 150px; 
-    border-top: 1px solid #e9ecef;
-}
-
-.footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 30px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-    gap: 20px; 
-}
-
-.footer-col h4 {
-    color: #2c3e50;
-    font-size: 0.95rem; 
-    margin-bottom: 15px;
-    font-weight: 700;
-}
-
-.footer-col ul {
-    list-style: none;
-    padding: 0;
-}
-
-.footer-col ul li {
-    margin-bottom: 8px;
-}
-
-.footer-col ul li a {
-    color: #6c757d;
-    text-decoration: none;
-    font-size: 0.85rem;
-    transition: color 0.3s;
-}
-
-.footer-col ul li a:hover {
-    color: #3498db;
-    padding-left: 3px;
-}
-
-/* Social Icons */
-.social-links {
-    display: flex;
-    gap: 10px;
-}
-
-.social-links a {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    width: 32px; /* Smaller circles */
-    height: 32px; 
-    font-size: 0.9rem; /* Smaller icons */
-    background: white;
-    color: #2c3e50;
-    border-radius: 50%;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    transition: all 0.3s;
-}
-
-.social-links a:hover {
-    background: #3498db;
-    color: white;
-    transform: translateY(-3px);
-}
-
-/* Copyright Bar */
-.footer-bottom {
-    text-align: center;
-    margin-top: 30px;
-    padding-top: 15px;
-    border-top: 1px solid #e9ecef;
-    color: #adb5bd;
-    font-size: 0.75rem; /* Very small copyright text */
-}
-    </style>
 </head>
 <body>
 
     <nav class="navbar">
         <div class="nav-left">
             <i class="fa-solid fa-bars" id="hamburger-btn"></i>
-            <img src="images/gart-logo.png" alt="Gart Logo" style="height: 40px; margin-left: 15px; border-radius: 50%;">
+            <a href="home.html">
+                <img src="images/gart-logo.png" alt="Gart Logo" style="height: 40px; margin-left: 15px; border-radius: 50%;">
+            </a>
         </div>
         <div class="nav-right">
-            <div class="icon-container"><i class="fa-solid fa-cart-shopping"></i></div>
-            
+            <div class="icon-container"><a href="cart.html" style="color:inherit;"><i class="fa-solid fa-cart-shopping"></i></a></div>
             <div class="icon-container">
                 <a href="notification.html" style="color: inherit;">
                     <i class="fa-solid fa-bell"></i>
                     <span class="badge" id="notif-badge" style="display: none;">0</span>
                 </a>
             </div>
-            
             <div class="icon-container">
                 <a href="profile.html" style="color: inherit;"><i class="fa-solid fa-user"></i></a>
             </div>
@@ -241,72 +41,129 @@
         <ul class="sidebar-links">
             <li><a href="home.html">Home</a></li>
             <li><a href="tosell.html">Sell</a></li>
-            <li><a href="#">Categories</a></li>
             <li><a href="about.html" style="background-color: #34495e;">About</a></li>
+            <li><a href="orders.html">My Orders</a></li>
             <li style="margin-top: auto;"><a href="login.html" id="logout-btn">Logout</a></li>
         </ul>
     </div>
     <div class="overlay" id="overlay"></div>
 
-    <div class="about-wrapper">
-        
-        <div class="about-hero">
-            <h1>Redefining E-Commerce</h1>
-            <p>Gart is more than just a marketplace. It's a community built on trust, speed, and innovation.</p>
+    <header class="about-hero">
+        <div class="hero-content">
+            <h1>We Are Gart</h1>
+            <p class="hero-subtitle">Building the infrastructure for the future of digital commerce.</p>
         </div>
+        <div class="hero-overlay"></div>
+    </header>
 
-        <div class="founder-section">
-            <div class="founder-img-box">
-                <img src="images/founder.jpg" alt="Okeke Chiagozie" onerror="this.src='https://via.placeholder.com/250?text=Founder+Image'">
-            </div>
-            <div class="founder-text">
-                <h2>Our Inspiration</h2>
-                <p>
-                    Gart was created as an inspiration by <span class="founder-name">Okeke Chiagozie</span>. 
-                    Driven by a passion for technology and a vision to simplify digital trade, 
-                    Chiagozie set out to build a platform that puts the user first.
-                </p>
-                <p>
-                    What started as a simple idea has evolved into a robust ecosystem where buyers 
-                    find value and sellers find growth. At Gart, we believe that technology should 
-                    empower people, not complicate their lives.
-                </p>
+    <section class="mission-section">
+        <div class="container">
+            <div class="mission-grid">
+                <div class="mission-text">
+                    <span class="section-tag">Our Mission</span>
+                    <h2>Empowering Everyone to Trade</h2>
+                    <p>
+                        At Gart, we believe that commerce is a fundamental human right. Our mission is to lower the barriers to entry, allowing anyone, anywhere, to start a business and reach a global audience instantly.
+                    </p>
+                    <p>
+                        We are building a seamless ecosystem where technology bridges the gap between local sellers and international buyers, fostering a community built on trust and transparency.
+                    </p>
+                </div>
+                <div class="mission-image">
+                    <i class="fa-solid fa-earth-americas"></i>
+                </div>
             </div>
         </div>
+    </section>
 
-        <h2 style="text-align: center; color: #2c3e50; margin-top: 50px;">Why Choose Gart?</h2>
-        <div class="features-grid">
+    <section class="stats-section">
+        <div class="container stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">10K+</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">50K+</div>
+                <div class="stat-label">Products Listed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">99.9%</div>
+                <div class="stat-label">Uptime</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Support</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="values-section">
+        <div class="container">
+            <div class="section-header-center">
+                <h2>Our Core Values</h2>
+                <p>The principles that guide every decision we make.</p>
+            </div>
             
-            <div class="feature-card">
-                <i class="fa-solid fa-rocket feature-icon"></i>
-                <h3>Lightning Fast</h3>
-                <p>Experience optimized performance with zero lag. From browsing to checkout, Gart is built for speed.</p>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="icon-box"><i class="fa-solid fa-users"></i></div>
+                    <h3>Customer Obsession</h3>
+                    <p>We start with the customer and work backward. We work vigorously to earn and keep customer trust.</p>
+                </div>
+                <div class="value-card">
+                    <div class="icon-box"><i class="fa-solid fa-lightbulb"></i></div>
+                    <h3>Invent and Simplify</h3>
+                    <p>We expect and require innovation and invention from our teams and always find ways to simplify.</p>
+                </div>
+                <div class="value-card">
+                    <div class="icon-box"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h3>Trust & Safety</h3>
+                    <p>We believe secure transactions are the bedrock of e-commerce. We protect our community at all costs.</p>
+                </div>
+                <div class="value-card">
+                    <div class="icon-box"><i class="fa-solid fa-chart-line"></i></div>
+                    <h3>Deliver Results</h3>
+                    <p>We focus on the key inputs for our business and deliver them with the right quality and in a timely fashion.</p>
+                </div>
             </div>
-
-            <div class="feature-card">
-                <i class="fa-solid fa-shield-halved feature-icon"></i>
-                <h3>Secure Payments</h3>
-                <p>Your security is our priority. We use advanced encryption to ensure every transaction is safe.</p>
-            </div>
-
-            <div class="feature-card">
-                <i class="fa-solid fa-layer-group feature-icon"></i>
-                <h3>Wide Variety</h3>
-                <p>From gadgets to furniture, find everything you need in one place with our diverse catalog.</p>
-            </div>
-
-            <div class="feature-card">
-                <i class="fa-solid fa-headset feature-icon"></i>
-                <h3>24/7 Support</h3>
-                <p>Our dedicated support team is always available to assist you with any inquiries or issues.</p>
-            </div>
-
         </div>
+    </section>
 
-    </div>
+    <section class="team-section">
+        <div class="container">
+            <div class="section-header-center">
+                <h2>Meet The Leadership</h2>
+                <p>A diverse team of engineers, designers, and visionaries.</p>
+            </div>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-img"></div> <h3>Okeke Chiagozie</h3>
+                    <p class="role">Chief Executive Officer</p>
+                </div>
+                <div class="team-card">
+                    <div class="team-img" style="background: #bdc3c7;"></div>
+                    <h3>Loading...</h3>
+                    <p class="role">Head of Operations</p>
+                </div>
+                <div class="team-card">
+                    <div class="team-img" style="background: #95a5a6;"></div>
+                    <h3>Loading...</h3>
+                    <p class="role">Chief Technology Officer</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to start your journey?</h2>
+            <p>Join thousands of sellers growing their business on Gart today.</p>
+            <a href="tosell.html" class="cta-btn">Start Selling</a>
+        </div>
+    </section>
+
     <footer class="footer">
         <div class="footer-container">
-            
             <div class="footer-col">
                 <h4>About Gart</h4>
                 <ul>
@@ -316,7 +173,6 @@
                     <li><a href="blog.html">Blog</a></li>
                 </ul>
             </div>
-
             <div class="footer-col">
                 <h4>Customer Service</h4>
                 <ul>
@@ -326,7 +182,6 @@
                     <li><a href="faq.html">FAQ</a></li>
                 </ul>
             </div>
-
             <div class="footer-col">
                 <h4>Quick Links</h4>
                 <ul>
@@ -336,7 +191,6 @@
                     <li><a href="payment_option.html">Payment Options</a></li>
                 </ul>
             </div>
-
             <div class="footer-col">
                 <h4>Follow Us</h4>
                 <div class="social-links">
@@ -346,13 +200,12 @@
                     <a href="#"><i class="fa-brands fa-youtube"></i></a>
                 </div>
             </div>
-
         </div>
-
         <div class="footer-bottom">
             <p>&copy; 2026 Gart. Shop Global. All rights reserved.</p>
         </div>
     </footer>
+
     <script src="script.js"></script>
 </body>
 </html>

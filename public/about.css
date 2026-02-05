@@ -1,200 +1,346 @@
-/* about.css */
+/* about.css - Professional Corporate Styling */
 
-/* Reuse global styles from style.css (imported in HTML) */
-
+/* --- General Layout --- */
 .about-wrapper {
-    max-width: 1000px;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 0 20px;
 }
 
-/* 1. Hero Section */
-.about-hero {
-    text-align: center;
-    margin-bottom: 60px;
-}
-
-.about-hero h1 {
-    font-size: 2.5rem;
-    color: #2c3e50;
+.section-tag {
+    display: inline-block;
+    background-color: #eaf6fc;
+    color: #3498db;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     margin-bottom: 15px;
 }
 
-.about-hero p {
-    font-size: 1.1rem;
+.section-header-center {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 60px;
+}
+
+.section-header-center h2 {
+    font-size: 2.2rem;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.section-header-center p {
     color: #7f8c8d;
+    font-size: 1.1rem;
+}
+
+/* --- 1. Hero Section --- */
+.about-hero {
+    position: relative;
+    height: 450px;
+    background: linear-gradient(135deg, #1a252f, #2c3e50);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    overflow: hidden;
+}
+
+/* Abstract Background Shapes */
+.about-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -20%;
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, rgba(52,152,219,0.15) 0%, rgba(0,0,0,0) 70%);
+    border-radius: 50%;
+}
+
+.about-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(52,152,219,0.1) 0%, rgba(0,0,0,0) 70%);
+    border-radius: 50%;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 20px;
+    animation: fadeInUp 1s ease-out;
+}
+
+.hero-content h1 {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    letter-spacing: -1px;
+}
+
+.hero-subtitle {
+    font-size: 1.3rem;
+    opacity: 0.9;
+    font-weight: 300;
     max-width: 600px;
     margin: 0 auto;
 }
 
-/* 2. Founder Section (The "Inspiration") */
-.founder-section {
-    display: flex;
-    align-items: center;
-    gap: 40px;
-    background-color: white;
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    margin-bottom: 60px;
+/* --- 2. Mission Section --- */
+.mission-section {
+    padding: 100px 0;
+    background-color: #fff;
 }
 
-.founder-img-box {
-    flex-shrink: 0;
-    width: 250px;
-    height: 250px;
-    border-radius: 20px; /* Soft square looks professional here */
-    overflow: hidden;
-    border: 5px solid #ecf0f1;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-}
-
-.founder-img-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.founder-text h2 {
-    font-size: 1.8rem;
-    color: #2c3e50;
-    margin-bottom: 15px;
-}
-
-.founder-name {
-    color: #3498db;
-    font-weight: 800;
-}
-
-.founder-text p {
-    color: #555;
-    line-height: 1.6;
-    margin-bottom: 15px;
-}
-
-/* 3. "Why Gart?" Cards */
-.features-grid {
+.mission-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
-    margin-top: 40px;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
 }
 
-.feature-card {
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    text-align: center;
-    transition: transform 0.3s;
-    border: 1px solid #eee;
-}
-
-.feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-    border-color: #3498db;
-}
-
-.feature-icon {
+.mission-text h2 {
     font-size: 2.5rem;
-    color: #3498db;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    line-height: 1.2;
+}
+
+.mission-text p {
+    font-size: 1.05rem;
+    color: #555;
+    line-height: 1.7;
     margin-bottom: 20px;
 }
 
-.feature-card h3 {
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.feature-card p {
-    font-size: 0.9rem;
-    color: #777;
-    line-height: 1.5;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .founder-section {
-        flex-direction: column;
-        text-align: center;
-    }
-}
-.footer {
-    background-color: #f8f9fa;
-    padding: 30px 0 15px;
-    margin-top: 150px; 
-    border-top: 1px solid #e9ecef;
-}
-
-.footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 30px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-    gap: 20px; 
-}
-
-.footer-col h4 {
-    color: #2c3e50;
-    font-size: 0.95rem; 
-    margin-bottom: 15px;
-    font-weight: 700;
-}
-
-.footer-col ul {
-    list-style: none;
-    padding: 0;
-}
-
-.footer-col ul li {
-    margin-bottom: 8px;
-}
-
-.footer-col ul li a {
-    color: #6c757d;
-    text-decoration: none;
-    font-size: 0.85rem;
-    transition: color 0.3s;
-}
-
-.footer-col ul li a:hover {
-    color: #3498db;
-    padding-left: 3px;
-}
-
-/* Social Icons */
-.social-links {
+.mission-image {
     display: flex;
-    gap: 10px;
-}
-
-.social-links a {
-    display: inline-flex;
     justify-content: center;
     align-items: center;
-    width: 32px; /* Smaller circles */
-    height: 32px; 
-    font-size: 0.9rem; /* Smaller icons */
-    background: white;
-    color: #2c3e50;
-    border-radius: 50%;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    transition: all 0.3s;
+    height: 350px;
+    background: #f8f9fa;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
 }
 
-.social-links a:hover {
-    background: #3498db;
+.mission-image i {
+    font-size: 10rem;
+    color: #3498db;
+    opacity: 0.1;
+    transition: transform 0.5s ease;
+}
+
+.mission-image:hover i {
+    transform: scale(1.1) rotate(10deg);
+    opacity: 0.2;
+}
+
+/* --- 3. Stats Section --- */
+.stats-section {
+    background-color: #3498db;
+    padding: 60px 0;
     color: white;
-    transform: translateY(-3px);
 }
 
-/* Copyright Bar */
-.footer-bottom {
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     text-align: center;
-    margin-top: 30px;
-    padding-top: 15px;
-    border-top: 1px solid #e9ecef;
-    color: #adb5bd;
-    font-size: 0.75rem; /* Very small copyright text */
+    gap: 30px;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+/* --- 4. Values Section --- */
+.values-section {
+    padding: 100px 0;
+    background-color: #fcfcfc;
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 30px;
+}
+
+.value-card {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #f0f0f0;
+}
+
+.value-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+}
+
+.icon-box {
+    width: 60px;
+    height: 60px;
+    background: #eaf6fc;
+    color: #3498db;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+}
+
+.value-card h3 {
+    font-size: 1.3rem;
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.value-card p {
+    font-size: 0.95rem;
+    color: #7f8c8d;
+    line-height: 1.6;
+}
+
+/* --- 5. Team Section --- */
+.team-section {
+    padding: 100px 0;
+    background: white;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    text-align: center;
+}
+
+.team-card {
+    transition: opacity 0.3s;
+}
+
+.team-img {
+    width: 150px;
+    height: 150px;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    background-image: url('images/founder.jpg'); /* Ensure this path is correct */
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.team-card h3 {
+    font-size: 1.2rem;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.role {
+    color: #3498db;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* --- 6. CTA Section --- */
+.cta-section {
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    color: white;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.cta-section h2 {
+    font-size: 2.2rem;
+    margin-bottom: 15px;
+}
+
+.cta-section p {
+    font-size: 1.1rem;
+    opacity: 0.8;
+    margin-bottom: 30px;
+}
+
+.cta-btn {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    padding: 15px 40px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: background 0.3s, transform 0.2s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.cta-btn:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
+}
+
+/* --- Animations --- */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .about-hero {
+        height: 350px;
+    }
+    
+    .hero-content h1 {
+        font-size: 2.8rem;
+    }
+
+    .mission-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        text-align: center;
+    }
+
+    .mission-image {
+        order: -1; /* Image on top on mobile */
+        height: 250px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr 1fr; /* 2x2 grid */
+    }
 }
