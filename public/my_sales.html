@@ -43,6 +43,18 @@
             font-size: 2rem; letter-spacing: 5px; width: 100%; padding: 10px;
             text-align: center; margin: 20px 0; border: 2px solid #ddd; border-radius: 5px;
         }
+        .mybutton{
+            padding: 8px;
+            border-radius: 7px;
+            outline: none;
+            border: none;
+            background-color: #7f8c8d;
+            font-weight: bold;
+        }
+        .mybutton:hover{
+            padding: 12px;
+            transition: 0.2s;
+        }
     </style>
 </head>
 <body>
@@ -53,8 +65,11 @@
             <h2 style="margin-left: 20px; color: #555;">Incoming Orders</h2>
         </div>
         <div class="nav-right">
-            <a href="home.html" style="text-decoration: none; color: #555;">
-                <i class="fa-solid fa-arrow-left"></i> Continue Shopping
+            <div class="icon-container">
+                <a href="my_products.html" style="color: inherit;"><button class="mybutton">My Products</button></a>
+            </div>
+            <a href="tosell.html" style="text-decoration: none; color: #555;">
+                <i class="fa-solid fa-arrow-left"></i> Back
             </a>
         </div>
     </nav>

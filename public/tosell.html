@@ -63,15 +63,20 @@
 
         /* Decorative background circle */
         .hero-circle {
-            position: absolute;
-            right: -50px;
-            bottom: -50px;
-            width: 400px;
-            height: 400px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-        }
-
+        position: absolute;
+        right: -50px;
+        bottom: -50px;
+        width: 400px;
+        height: 400px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+        pointer-events: none; 
+        z-index: 0; 
+    }
+    .hero-text {
+        position: relative; /* Needed for z-index to work */
+        z-index: 10; /* Forces text & buttons above the circle */
+    }
         .hero-image {
             font-size: 12rem;
             color: rgba(255,255,255,0.15);
@@ -183,9 +188,8 @@
         <ul class="sidebar-links">
             <li><a href="home.html">Home</a></li>
             <li><a href="tosell.html" style="background-color: #34495e;">Sell</a></li>
-            <li><a href="my_products.html">My Products</a></li>
-            <li><a href="orders.html">My Orders</a></li>
             <li><a href="about.html">About</a></li>
+            <li><a href="orders.html">My Orders</a></li>
             <li style="margin-top: auto;"><a href="login.html" id="logout-btn">Logout</a></li>
         </ul>
     </div>
@@ -248,8 +252,52 @@
     </div>
 
     <footer class="footer">
+        <div class="footer-container">
+            
+            <div class="footer-col">
+                <h4>About Gart</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="careers.html">Careers</a></li>
+                    <li><a href="press.html">Press</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="#">Track Order</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="privacy_policy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="shipping_info.html">Shipping Info</a></li>
+                    <li><a href="payment_option.html">Payment Options</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+
+        </div>
+
         <div class="footer-bottom">
-            <p>&copy; 2026 Gart Inc. Shop Global. All rights reserved.</p>
+            <p>&copy; 2026 Gart. Shop Global. All rights reserved.</p>
         </div>
     </footer>
 

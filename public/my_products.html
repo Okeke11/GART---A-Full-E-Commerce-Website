@@ -32,9 +32,12 @@
             text-decoration: none;
             border-radius: 5px;
             font-weight: bold;
+            transition: background 0.3s;
+            cursor: pointer;
         }
+        .add-new-btn:hover { background-color: #2980b9; }
 
-        /* Product Card Styles (Reused) */
+        /* Product Card Styles */
         .product-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -58,7 +61,6 @@
 
         .card-info { padding: 15px; }
         
-        /* Delete Button specific for this page */
         .delete-btn {
             width: 100%;
             padding: 10px;
@@ -89,11 +91,14 @@
     <div class="my-products-wrapper">
         <div class="header-section">
             <h1>My Active Listings</h1>
-            <a href="sell.html" class="add-new-btn"><i class="fa-solid fa-plus"></i> Add New Product</a>
+            <a href="#" id="add-product-btn" class="add-new-btn"><i class="fa-solid fa-plus"></i> Add New Product</a>
         </div>
 
         <div class="product-grid" id="myProductGrid">
-            <p>Loading your products...</p>
+            <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #ddd;"></i>
+                <p style="margin-top: 10px; color: #777;">Loading your products...</p>
+            </div>
         </div>
     </div>
 
@@ -103,6 +108,7 @@
         async function loadMyProducts() {
             const email = localStorage.getItem('userEmail');
             const grid = document.getElementById('myProductGrid');
+            const addBtn = document.getElementById('add-product-btn');
 
             if (!email) {
                 grid.innerHTML = '<p>Please log in to see your products.</p>';
@@ -114,18 +120,40 @@
                 const data = await response.json();
 
                 if (data.success) {
+                    
+                    // --- SMART BUTTON LOGIC ---
+                    if (data.products.length > 0) {
+                        // SCENARIO 1: User has products -> They are VERIFIED.
+                        // Go straight to sell.html (skip verification)
+                        addBtn.onclick = function() {
+                            window.location.href = 'sell.html';
+                        };
+                    } else {
+                        // SCENARIO 2: User has 0 products -> Assume NOT VERIFIED.
+                        // Alert then go to verification page
+                        addBtn.onclick = function(e) {
+                            e.preventDefault();
+                            alert("Go to create listing");
+                            window.location.href = 'tosell.html';
+                        };
+                    }
+                    // ---------------------------
+
                     if (data.products.length === 0) {
-                        grid.innerHTML = '<p>You haven\'t listed any items yet.</p>';
+                        grid.innerHTML = `
+                            <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #7f8c8d;">
+                                <i class="fa-solid fa-box-open" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                                <p>You haven't listed any items yet.</p>
+                            </div>
+                        `;
                         return;
                     }
 
-                    grid.innerHTML = ''; // Clear loading text
+                    grid.innerHTML = ''; 
                     
                     data.products.forEach(product => {
                         const card = document.createElement('div');
                         card.className = 'product-card';
-                        
-                        // Use first image or placeholder
                         const imgUrl = product.images.length > 0 ? `/uploads/${product.images[0]}` : 'https://via.placeholder.com/250';
 
                         card.innerHTML = `
@@ -157,7 +185,7 @@
                 const data = await response.json();
                 if(data.success) {
                     alert("Product deleted!");
-                    loadMyProducts(); // Reload the list
+                    loadMyProducts(); 
                 }
             } catch(e) {
                 alert("Could not delete product.");
