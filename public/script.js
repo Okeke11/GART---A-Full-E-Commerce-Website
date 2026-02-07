@@ -248,12 +248,26 @@ function setupCardSlider(card, totalImages) {
 
 function filterProducts(category) {
     // Update Header
-    document.querySelector('.main-content h1').innerText = category === 'all' ? 'All Products' : category.charAt(0).toUpperCase() + category.slice(1);
+    const title = category === 'all' ? 'All Products' : category.charAt(0).toUpperCase() + category.slice(1);
+    document.querySelector('.main-content h1').innerText = title;
     
     if (category === 'all' || category === 'categories') {
         renderProducts(allProducts);
     } else {
-        const filtered = allProducts.filter(p => p.category && p.category.toLowerCase() === category);
+        // --- SMART FILTERING ---
+        const filtered = allProducts.filter(p => {
+            // Get product category safely
+            const prodCat = (p.category || "").toLowerCase();
+            
+            // SPECIAL CASE: If user clicked "phones and tablets", 
+            // show items that are "phones" OR "tablets" OR "phones and tablets"
+            if (category.includes("phone")) {
+                return prodCat.includes("phone") || prodCat.includes("tablet");
+            }
+
+            // Standard check for other categories
+            return prodCat === category;
+        });
         renderProducts(filtered);
     }
 }
