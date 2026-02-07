@@ -3,110 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog - Gart</title>
+    <title>Track Order - Gart</title>
     <link rel="icon" type="image/png" href="images/gart-logo.png">
     
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        .blog-wrapper {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 80px 20px;
-            text-align: center;
-            flex: 1;
+        .tracking-wrapper {
+            min-height: 60vh; /* Takes up most of the screen */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
         }
 
-        .blog-icon {
-            font-size: 4rem;
-            color: #3498db;
-            background: #e8f4fc;
+        .coming-soon-card {
+            max-width: 600px;
+            text-align: center;
+            background: white;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+        }
+
+        .icon-box {
             width: 100px;
             height: 100px;
-            line-height: 100px;
+            background: #eaf6fc;
             border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin: 0 auto 30px;
+            animation: pulse 2s infinite;
         }
 
-        .blog-title {
-            font-size: 2.8rem;
+        .icon-box i {
+            font-size: 3rem;
+            color: #3498db;
+        }
+
+        .badge-coming-soon {
+            background: #f39c12;
+            color: white;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 5px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        h1 {
             color: #2c3e50;
             margin-bottom: 15px;
+            font-size: 2rem;
         }
 
-        .blog-subtitle {
-            font-size: 1.2rem;
+        p {
             color: #7f8c8d;
-            max-width: 500px;
-            margin: 0 auto 40px;
             line-height: 1.6;
+            margin-bottom: 30px;
         }
 
-        /* Newsletter Box */
-        .newsletter-box {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            border: 1px solid #eee;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .newsletter-box h3 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .newsletter-box p {
-            color: #95a5a6;
-            margin-bottom: 25px;
-            font-size: 0.95rem;
-        }
-
-        .input-group {
+        .action-buttons {
             display: flex;
-            gap: 10px;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
 
-        .input-group input {
-            flex: 1;
-            padding: 12px 20px;
-            border: 2px solid #eee;
-            border-radius: 50px;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        .input-group input:focus {
-            border-color: #3498db;
-        }
-
-        .subscribe-btn {
-            background-color: #2c3e50;
+        .btn-primary {
+            background-color: #3498db;
             color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s;
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
         }
 
-        .subscribe-btn:hover {
-            background-color: #34495e;
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
         }
 
-        /* Responsive */
-        @media (max-width: 600px) {
-            .input-group {
-                flex-direction: column;
-            }
-            .subscribe-btn {
-                width: 100%;
-            }
+        .btn-secondary {
+            background-color: #f8f9fa;
+            color: #555;
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            border: 1px solid #ddd;
+            transition: 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e9ecef;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(52, 152, 219, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
         }
     </style>
 </head>
@@ -120,11 +124,7 @@
             </a>
         </div>
         <div class="nav-right">
-            <div class="icon-container">
-                <a href="cart.html" style="color: inherit;">
-                <i class="fa-solid fa-cart-shopping"></i>
-                </a>
-            </div>
+            <div class="icon-container"><a href="cart.html" style="color:inherit;"><i class="fa-solid fa-cart-shopping"></i></a></div>
             <div class="icon-container">
                 <a href="notification.html" style="color: inherit;">
                     <i class="fa-solid fa-bell"></i>
@@ -151,37 +151,42 @@
     </div>
     <div class="overlay" id="overlay"></div>
 
-    <div class="blog-wrapper">
-        
-        <div class="blog-icon">
-            <i class="fa-solid fa-pen-nib"></i>
-        </div>
-
-        <h1 class="blog-title">Gart Insights</h1>
-        <p class="blog-subtitle">We are currently crafting in-depth articles, buying guides, and seller tips to help you get the best out of Gart.</p>
-
-        <div class="newsletter-box">
-            <h3>Be the first to know</h3>
-            <p>Subscribe to get notified when we publish our first article.</p>
+    <div class="tracking-wrapper">
+        <div class="coming-soon-card">
+            <div class="badge-coming-soon">Under Construction</div>
             
-            <form class="input-group" onsubmit="event.preventDefault(); alert('Thanks for subscribing!');">
-                <input type="email" placeholder="Enter your email address" required>
-                <button type="submit" class="subscribe-btn">Notify Me</button>
-            </form>
-        </div>
+            <div class="icon-box">
+                <i class="fa-solid fa-map-location-dot"></i>
+            </div>
+            
+            <h1>Live Tracking is Coming Soon</h1>
+            
+            <p>
+                We are building a powerful real-time tracking system so you can see exactly where your package is on the map.
+                <br><br>
+                <strong>Don't worry!</strong> You can still check if your order is <em>Pending</em> or <em>Delivered</em> in your order history.
+            </p>
 
+            <div class="action-buttons">
+                <a href="orders.html" class="btn-primary">Go to My Orders</a>
+                <a href="home.html" class="btn-secondary">Continue Shopping</a>
+            </div>
+        </div>
     </div>
 
     <footer class="footer">
         <div class="footer-container">
+            
             <div class="footer-col">
                 <h4>About Gart</h4>
                 <ul>
                     <li><a href="about.html">About Us</a></li>
                     <li><a href="careers.html">Careers</a></li>
                     <li><a href="press.html">Press</a></li>
-                    <li><a href="blog.html" style="color: #3498db;">Blog</a></li> </ul>
+                    <li><a href="blog.html">Blog</a></li>
+                </ul>
             </div>
+
             <div class="footer-col">
                 <h4>Customer Service</h4>
                 <ul>
@@ -191,6 +196,7 @@
                     <li><a href="faq.html">FAQ</a></li>
                 </ul>
             </div>
+
             <div class="footer-col">
                 <h4>Quick Links</h4>
                 <ul>
@@ -200,6 +206,7 @@
                     <li><a href="payment_option.html">Payment Options</a></li>
                 </ul>
             </div>
+
             <div class="footer-col">
                 <h4>Follow Us</h4>
                 <div class="social-links">
@@ -209,9 +216,11 @@
                     <a href="#"><i class="fa-brands fa-youtube"></i></a>
                 </div>
             </div>
+
         </div>
+
         <div class="footer-bottom">
-            <p>&copy; 2026 Gart Inc. Shop Global. All rights reserved.</p>
+            <p>&copy; 2026 Gart. Shop Global. All rights reserved.</p>
         </div>
     </footer>
 

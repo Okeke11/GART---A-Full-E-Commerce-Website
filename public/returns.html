@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Returns & Refunds - Gart</title>
+    <link rel="icon" type="image/png" href="images/gart-logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            box-sizing: border-box; /* Prevents padding from breaking layout */
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f4f6f8;
+            min-height: 100vh; /* Allow scrolling on small screens */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px; /* Safety padding for edges */
+        }
+
+        .returns-card {
+            background: white;
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative; /* Needed to pin the badge */
+            margin-top: 20px; /* Space for the badge if it sticks out */
+        }
+
+        /* FIXED BADGE: Pinned to Top Right */
+        .badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #f39c12;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .icon-box {
+            width: 70px;
+            height: 70px;
+            background: #fff0f0;
+            color: #e74c3c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 10px auto 20px; /* Adjusted spacing */
+            animation: pulse 2s infinite;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        p {
+            color: #7f8c8d;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+
+        .policy-box {
+            background: #eaf6fc;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            text-align: left;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+            color: #34495e;
+        }
+
+        .contact-section {
+            margin-bottom: 30px;
+        }
+
+        .call-btn {
+            background: #2c3e50;
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+            font-size: 0.9rem;
+            /* Make button responsive */
+            max-width: 100%; 
+            justify-content: center;
+        }
+
+        .call-btn:hover {
+            background: #34495e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #7f8c8d;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            color: #2c3e50;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(231, 76, 60, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        }
+
+        /* MOBILE FIXES */
+        @media (max-width: 480px) {
+            .returns-card {
+                padding: 25px; /* Less padding on small phones */
+            }
+            h1 {
+                font-size: 1.5rem;
+                margin-top: 15px;
+            }
+            .badge {
+                /* On very small screens, un-pin it so it doesn't overlap text */
+                position: relative;
+                top: auto;
+                right: auto;
+                display: inline-block;
+                margin-bottom: 10px;
+            }
+            .call-btn {
+                width: 100%; /* Full width button on phone */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="returns-card">
+        <div class="badge">Coming Soon</div>
+        
+        <div class="icon-box">
+            <i class="fa-solid fa-rotate-left"></i>
+        </div>
+
+        <h1>Returns & Refunds</h1>
+        <p>We are currently building an automated portal to handle returns instantly. For now, our support team will assist you manually.</p>
+
+        <div class="policy-box">
+            <i class="fa-solid fa-circle-info" style="color: #3498db; margin-right: 5px;"></i>
+            <strong>Policy:</strong> Return items within <strong>5 days</strong> of purchase.
+        </div>
+
+        <div class="contact-section">
+            <p style="margin-bottom: 10px; font-weight: bold;">Need to return an item?</p>
+            <a href="tel:09127741457" class="call-btn">
+                <i class="fa-solid fa-phone"></i> Call 0912 774 1457
+            </a>
+        </div>
+
+        <a href="home.html" class="back-link">
+            <i class="fa-solid fa-arrow-left"></i> Back to Home
+        </a>
+    </div>
+
+</body>
+</html>
