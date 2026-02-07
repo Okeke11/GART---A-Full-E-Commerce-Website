@@ -47,22 +47,44 @@ document.addEventListener('DOMContentLoaded', () => {
     manageNotifications();
 
     // --- 4. SHOPPING CART BADGE ---
-    updateCartBadge(); // Check cart immediately on load
+    updateCartBadge(); 
 
     // --- 5. LOAD PRODUCTS (Only if on home page) ---
     if(document.querySelector('.main-content')) {
         loadProducts();
     }
 
-    // Setup Category Filter Buttons (Dropdown)
+    // --- 6. CATEGORY FILTER ---
     const categoryLinks = document.querySelectorAll('#category-dropdown a');
     categoryLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            const selectedCategory = e.target.textContent.toLowerCase().trim(); // e.g., "phones"
+            const selectedCategory = e.target.textContent.toLowerCase().trim();
             filterProducts(selectedCategory);
+            // Close sidebar on mobile after selection
+            if(window.innerWidth < 768) toggleSidebar(); 
         });
     });
+
+    // --- 7. SEARCH LOGIC (Moved Inside Here) ---
+    const searchInput = document.getElementById('search-input');
+    const searchBtn = document.getElementById('search-btn');
+
+    if(searchBtn && searchInput) {
+        // Click Search Button
+        searchBtn.addEventListener('click', () => {
+            const term = searchInput.value.trim();
+            if(term) executeSearch(term);
+        });
+
+        // Press "Enter" Key
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const term = searchInput.value.trim();
+                if(term) executeSearch(term);
+            }
+        });
+    }
 });
 
 // --- NOTIFICATION LOGIC ---
@@ -99,9 +121,20 @@ let allProducts = []; // Store products here
 
 async function loadProducts() {
     const container = document.querySelector('.main-content');
-    if(!container) return; // Guard clause if not on home page
+    if(!container) return; 
 
-    container.innerHTML = '<h1>Fresh Recommendations</h1><div class="product-grid" id="productGrid"></div>';
+    // Reset Title
+    container.querySelector('h1').innerText = 'Fresh Recommendations';
+    container.querySelector('p').innerText = 'Select a category to start shopping.';
+    
+    // Ensure grid exists
+    let grid = document.getElementById('productGrid');
+    if(!grid) {
+        grid = document.createElement('div');
+        grid.className = 'product-grid';
+        grid.id = 'productGrid';
+        container.appendChild(grid);
+    }
     
     try {
         const response = await fetch('/api/products');
@@ -124,7 +157,7 @@ function renderProducts(productsToRender) {
     const currentUser = localStorage.getItem('userEmail');
 
     if (productsToRender.length === 0) {
-        grid.innerHTML = '<p>No products found in this category.</p>';
+        grid.innerHTML = '<p>No products found.</p>';
         return;
     }
 
@@ -137,7 +170,6 @@ function renderProducts(productsToRender) {
         // 1. Card Click -> Details Page
         card.style.cursor = "pointer";
         card.addEventListener('click', (e) => {
-            // If the user clicked the Add to Cart button, do nothing (handled below)
             if (e.target.classList.contains('add-cart-btn')) return;
             window.location.href = `product_details.html?id=${product._id}`;
         });
@@ -152,8 +184,6 @@ function renderProducts(productsToRender) {
             imagesHtml = '<img src="https://via.placeholder.com/250" class="active">';
         }
 
-        // If it's my product, make button Grey (#95a5a6) and say "Your Listing"
-        // If not, make it Default Blue/Black and say "Add to Cart"
         const btnText = isMyProduct ? 'Your Listing' : 'Add to Cart';
         const btnStyle = isMyProduct ? 'background-color: #95a5a6; cursor: default;' : '';
 
@@ -175,7 +205,7 @@ function renderProducts(productsToRender) {
         // 3. Connect the Add to Cart Button
         const addBtn = card.querySelector('.add-cart-btn');
         addBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Stops the click from bubbling up to the card
+            e.stopPropagation();
             if (isMyProduct) {
                 alert("You cannot add your own product to cart.");
                 return;
@@ -192,7 +222,6 @@ function renderProducts(productsToRender) {
     });
 }
 
-// Function to handle image swapping for a specific card
 function setupCardSlider(card, totalImages) {
     let currentIndex = 0;
     const images = card.querySelectorAll('img');
@@ -205,7 +234,7 @@ function setupCardSlider(card, totalImages) {
     }
 
     prevBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // Stop clicking image
+        e.stopPropagation();
         currentIndex = (currentIndex === 0) ? totalImages - 1 : currentIndex - 1;
         showImage(currentIndex);
     });
@@ -218,34 +247,30 @@ function setupCardSlider(card, totalImages) {
 }
 
 function filterProducts(category) {
+    // Update Header
+    document.querySelector('.main-content h1').innerText = category === 'all' ? 'All Products' : category.charAt(0).toUpperCase() + category.slice(1);
+    
     if (category === 'all' || category === 'categories') {
         renderProducts(allProducts);
     } else {
-        const filtered = allProducts.filter(p => p.category.toLowerCase() === category);
+        const filtered = allProducts.filter(p => p.category && p.category.toLowerCase() === category);
         renderProducts(filtered);
     }
 }
 
-// --- SHOPPING CART LOGIC (UPDATED FOR MULTI-USER) ---
-
+// --- SHOPPING CART LOGIC ---
 function getCartKey() {
     const email = localStorage.getItem('userEmail');
-    // If no user is logged in, use a generic 'guest' cart
     return email ? `cart_${email}` : 'cart_guest';
 }
 
 function updateCartBadge() {
-    
-    // 1. DYNAMIC KEY: Use the email to find the specific cart
     const cartKey = getCartKey();
     const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-    
-    // Find the cart icon container
     const cartIcon = document.querySelector('.fa-cart-shopping');
     if(!cartIcon) return; 
 
     const badgeContainer = cartIcon.parentElement;
-    
     let badgeSpan = badgeContainer.querySelector('.cart-count');
     
     if (!badgeSpan) {
@@ -279,31 +304,57 @@ function addToCart(product) {
         window.location.href = 'login.html';
         return;
     }
-
-    // 1. DYNAMIC KEY: Get this specific user's cart
     const cartKey = getCartKey();
     let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-
-    // 2. Check if item exists
     const existingItemIndex = cart.findIndex(item => item._id === product._id);
     
     if (existingItemIndex > -1) {
-        // Item exists? Increase quantity!
-        if(!cart[existingItemIndex].quantity) {
-            cart[existingItemIndex].quantity = 1; 
-        }
+        if(!cart[existingItemIndex].quantity) cart[existingItemIndex].quantity = 1; 
         cart[existingItemIndex].quantity += 1;
         alert("Item quantity updated in cart!");
     } else {
-        // New item? Set quantity to 1 and push
         product.quantity = 1;
         cart.push(product);
         alert("Item added to cart!");
     }
-
-    // 3. Save back to storage
     localStorage.setItem(cartKey, JSON.stringify(cart));
-
-    // 4. Update UI
     updateCartBadge();
+}
+
+// --- FIXED SEARCH FUNCTION ---
+async function executeSearch(term) {
+    // 1. Target the CORRECT ID (productGrid, NOT product-grid)
+    const grid = document.getElementById('productGrid');
+    if(!grid) return;
+
+    // 2. Change Header to "Search Results"
+    document.querySelector('.main-content h1').innerText = `Results for "${term}"`;
+    grid.innerHTML = '<p style="text-align:center; width:100%;">Searching...</p>';
+
+    try {
+        const response = await fetch(`/api/search?term=${term}`);
+        const data = await response.json();
+
+        grid.innerHTML = ''; // Clear loading message
+
+        if (data.success && data.products.length > 0) {
+            // 3. Use renderProducts to show items
+            renderProducts(data.products);
+        } else {
+            // 4. Show the "None for now" UI
+            grid.innerHTML = `
+                <div style="text-align:center; width:100%; padding:50px; grid-column: 1 / -1; color:#7f8c8d;">
+                    <i class="fa-solid fa-magnifying-glass" style="font-size:3rem; margin-bottom:15px; opacity:0.5;"></i>
+                    <h3>None for now</h3>
+                    <p>We couldn't find anything matching "${term}".</p>
+                    <button onclick="loadProducts()" style="margin-top:15px; padding:10px 20px; background:#3498db; color:white; border:none; border-radius:5px; cursor:pointer;">
+                        View All Products
+                    </button>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error(error);
+        grid.innerHTML = '<p style="text-align:center;">Search failed. Try again.</p>';
+    }
 }

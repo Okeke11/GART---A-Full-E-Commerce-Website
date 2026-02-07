@@ -491,7 +491,31 @@ app.post('/verify-otp', (req, res) => {
         res.json({ success: false, message: "Invalid Code" });
     }
 });
+// --- SEARCH ROUTE ---
+app.get('/api/search', async (req, res) => {
+    const { term } = req.query;
+    
+    if (!term) return res.json({ success: false });
 
+    try {
+        // Create a case-insensitive regex pattern
+        const regex = new RegExp(term, 'i');
+
+        // Search in Title OR Description
+        const products = await Product.find({
+            $or: [
+                { title: regex },
+                { description: regex },
+                { category: regex } // Bonus: Search by category too!
+            ]
+        });
+
+        res.json({ success: true, products });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false });
+    }
+});
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
