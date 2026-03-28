@@ -258,7 +258,7 @@
                 getOtpBtn.style.display = 'none';
                 otpSection.style.display = 'block';
                 otpInput.focus();
-                alert("Match found! Code sent.");
+                alert(`Match found! Your test code is: ${data.testCode}`);
             } else {
                 // Handle Errors
                 getOtpBtn.disabled = false;
