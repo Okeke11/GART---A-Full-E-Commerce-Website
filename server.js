@@ -472,16 +472,25 @@ app.post('/send-otp', async (req, res) => {
 
         if (cleanInput !== cleanStored) return res.json({ success: false, message: "Number mismatch." });
 
-        const code = Math.floor(1000 + Math.random() * 9000).toString();
-        console.log(`[SMS] OTP for ${phone}: ${code}`);
+        // --- CHANGE IS HERE ---
+        // 1. Force the code to always be "1234" for testing
+        const code = "1234"; 
+        
+        // (You can delete or ignore the console.log now)
+        console.log(`[TEST MODE] OTP for ${phone} is hardcoded to: ${code}`); 
+        
         otpStore[phone] = code;
 
-        res.json({ success: true, message: "Code sent!" });
+        // 2. You can optionally send the code back to the browser in the JSON if you want to show it in an alert
+        res.json({ success: true, message: "Test code is 1234", testCode: code });
+        // ----------------------
+
     } catch (error) {
         res.status(500).json({ success: false });
     }
 });
 
+// Leave your /verify-otp route exactly as it is!
 app.post('/verify-otp', (req, res) => {
     const { phone, code } = req.body;
     if (otpStore[phone] && otpStore[phone] === code) {
@@ -491,31 +500,7 @@ app.post('/verify-otp', (req, res) => {
         res.json({ success: false, message: "Invalid Code" });
     }
 });
-// --- SEARCH ROUTE ---
-app.get('/api/search', async (req, res) => {
-    const { term } = req.query;
-    
-    if (!term) return res.json({ success: false });
 
-    try {
-        // Create a case-insensitive regex pattern
-        const regex = new RegExp(term, 'i');
-
-        // Search in Title OR Description
-        const products = await Product.find({
-            $or: [
-                { title: regex },
-                { description: regex },
-                { category: regex } // Bonus: Search by category too!
-            ]
-        });
-
-        res.json({ success: true, products });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false });
-    }
-});
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
