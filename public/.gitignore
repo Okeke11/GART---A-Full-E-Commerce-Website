@@ -41,3 +41,5 @@ coverage/
 # --- Temporary Files ---
 tmp/
 temp/
+
+.env
